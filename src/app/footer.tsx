@@ -2,17 +2,17 @@ import Link from 'next/link';
 
 export function Footer() {
     return (
-        <div className="h-40 bg-gray-100 mt-12 flex items-center">
-            <div className="container mx-auto flex justify-between items-center">
+        <div className="flex items-center h-40 bg-background mt-12">
+            <div className="container flex justify-between items-center mx-auto">
                 <div>Alexis LEROY</div>
 
-                <Link className="text-blue-900 hover:text-blue-500" href="/privacy">
+                <Link className="text-secondary hover:text-primary" href="/privacy">
                     Privacy Policy
                 </Link>
-                <Link className="text-blue-900 hover:text-blue-500" href="/terms-of-service">
+                <Link className="text-secondary hover:text-primary" href="/terms-of-service">
                     Terms of Service
                 </Link>
-                <Link className="text-blue-900 hover:text-blue-500" href="/about">
+                <Link className="text-secondary hover:text-primary" href="/about">
                     About
                 </Link>
             </div>
