@@ -6,13 +6,13 @@ export function Footer() {
             <div className="container flex justify-between items-center mx-auto">
                 <div>Alexis LEROY</div>
 
-                <Link className="text-secondary hover:text-primary" href="/privacy">
+                <Link className="text-secondary hover:text-primary" href="#">
                     Privacy Policy
                 </Link>
-                <Link className="text-secondary hover:text-primary" href="/terms-of-service">
+                <Link className="text-secondary hover:text-primary" href="#">
                     Terms of Service
                 </Link>
-                <Link className="text-secondary hover:text-primary" href="/about">
+                <Link className="text-secondary hover:text-primary" href="#">
                     About
                 </Link>
             </div>
