@@ -12,6 +12,14 @@ export default defineSchema({
     })
         .index('by_orgId', ['orgId'])
         .index('by_shouldDelete', ['shouldDelete']),
+    videos: defineTable({
+        title: v.string(),
+        userId: v.id('users'),
+        link: v.string(),
+        shouldDelete: v.optional(v.boolean())
+    })
+        .index('by_userId', ['userId'])
+        .index('by_shouldDelete', ['shouldDelete']),
     favorites: defineTable({
         todoId: v.id('todos'),
         orgId: v.string(),

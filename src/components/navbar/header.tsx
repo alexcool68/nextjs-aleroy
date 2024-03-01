@@ -5,9 +5,9 @@ import { AirVentIcon } from 'lucide-react';
 
 export function Header() {
     return (
-        <div className="relative z-10 border-b py-5 bg-background">
-            <div className="container flex items-center justify-between mx-auto">
-                <Link href="/" className="flex gap-5 items-center">
+        <div className="relative z-10 border-b w-full">
+            <div className="container flex h-16 items-center justify-between bg-background">
+                <Link href="/" className="flex items-center gap-5">
                     <AirVentIcon className="size-10 text-primary/75" />
                     {/* <Image src="/logo.png" width="50" height="50" alt="file drive logo" /> */}
                     <div className="text-2xl font-semibold tracking-wider hidden md:block">Alexis LEROY</div>
@@ -19,7 +19,7 @@ export function Header() {
                     </Button>
                 </SignedIn>
 
-                <div className="flex gap-5">
+                <div className="flex items-center gap-5">
                     <OrganizationSwitcher />
                     <UserButton afterSignOutUrl="/" />
                     <SignedOut>
