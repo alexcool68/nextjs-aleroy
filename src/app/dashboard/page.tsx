@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { formatDistance, subDays } from 'date-fns';
+import { formatDistance } from 'date-fns';
 import { api } from '../../../convex/_generated/api';
 import { useToast } from '@/components/ui/use-toast';
 import { useMutation, useQuery } from 'convex/react';
@@ -9,7 +9,7 @@ import validator from 'validator';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-const API_KEY = 'SStOONRiC8fdyLczg14y';
+// const API_KEY = 'SStOONRiC8fdyLczg14y';
 
 export default function Dashboard() {
     const { toast } = useToast();
@@ -27,9 +27,12 @@ export default function Dashboard() {
         }
 
         setIsFetching(true);
-        const response = await fetch(`https://api.alldebrid.com/v4/link/unlock?agent=myAppName&apikey=${API_KEY}&link=${encodeURI(link)}`, {
-            method: 'GET'
-        });
+        const response = await fetch(
+            `https://api.alldebrid.com/v4/link/unlock?agent=myAppName&apikey=${process.env.NEXT_PUBLIC_ALLDEBRID_KEY}&link=${encodeURI(link)}`,
+            {
+                method: 'GET'
+            }
+        );
 
         const data = await response.json();
 
