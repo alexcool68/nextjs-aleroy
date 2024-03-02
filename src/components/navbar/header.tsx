@@ -1,26 +1,42 @@
+'use client';
+
 import Link from 'next/link';
-import { OrganizationSwitcher, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import { Button } from '@/components/ui/button';
-import { AirVentIcon } from 'lucide-react';
+import { BrainCircuitIcon } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 export function Header() {
+    const pathname = usePathname();
+
     return (
         <div className="relative z-10 border-b w-full">
-            <div className="container flex h-16 items-center justify-between bg-background">
+            <div className="container flex h-20 items-center justify-between">
                 <Link href="/" className="flex items-center gap-5">
-                    <AirVentIcon className="size-10 text-primary/75" />
-                    {/* <Image src="/logo.png" width="50" height="50" alt="file drive logo" /> */}
+                    <BrainCircuitIcon className="size-10 text-primary/75" />
                     <div className="text-2xl font-semibold tracking-wider hidden md:block">Alexis LEROY</div>
                 </Link>
 
-                <SignedIn>
-                    <Button variant={'ghost'}>
-                        <Link href="/dashboard">Dashboard</Link>
-                    </Button>
-                </SignedIn>
-
-                <div className="flex items-center gap-5">
-                    <OrganizationSwitcher />
+                <div className="flex items-center gap-8">
+                    <SignedIn>
+                        <Link
+                            href="/"
+                            className={cn(
+                                'text-secondary-foreground border-b-2 px-1 py-2',
+                                pathname === '/' ? 'border-primary' : 'border-secondary'
+                            )}>
+                            Home
+                        </Link>
+                        <Link
+                            href="/dashboard"
+                            className={cn(
+                                'text-secondary-foreground border-b-2 px-1 py-2',
+                                pathname.includes('/dashboard') ? 'border-primary' : 'border-secondary'
+                            )}>
+                            Dashboard
+                        </Link>
+                    </SignedIn>
                     <UserButton afterSignOutUrl="/" />
                     <SignedOut>
                         <SignInButton mode="modal">
