@@ -1,14 +1,18 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
+
 import { formatDistance } from 'date-fns';
 import { api } from '../../../../convex/_generated/api';
 import { useToast } from '@/components/ui/use-toast';
+
 import { useMutation, useQuery } from 'convex/react';
 import validator from 'validator';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Trash2Icon } from 'lucide-react';
+import { Film, Trash } from 'lucide-react';
 
 export default function DebridDashboard() {
     const { toast } = useToast();
@@ -54,7 +58,14 @@ export default function DebridDashboard() {
     return (
         <>
             <div className="p-5">
-                <h1 className="text-4xl font-medium tracking-wider"># Debrideur de liens</h1>
+                <div className="flex flex-row justify-between items-center border-b pb-5">
+                    <h1 className="text-4xl font-medium tracking-wider"># Debrideur de liens</h1>
+                    <Button variant={'secondary'} size={'sm'} asChild>
+                        <Link href="/dashboard/debrid/trash">
+                            <Trash className="w-4 h-4 mr-2" /> Trash
+                        </Link>
+                    </Button>
+                </div>
                 <form onSubmit={handleSubmit} className="flex flex-row gap-5 space-x-5 my-5">
                     <Input
                         name="link"
@@ -68,18 +79,26 @@ export default function DebridDashboard() {
                     </Button>
                 </form>
 
+                {videos?.length === 0 && (
+                    <div className="flex items-center justify-center bg-background/45 border-2 border-dotted rounded-2xl my-5 py-20">
+                        <div className="flex items-center text-2xl text-muted-foreground">
+                            <Film className="size-10 mr-5" /> No data found
+                        </div>
+                    </div>
+                )}
+
                 {videos &&
                     videos.map((video) => (
-                        <div key={video._id} className="flex items-center justify-between gap-5 h-10">
+                        <div key={video._id} className="flex items-center justify-between gap-5 py-5 border-b">
                             <span>{video.title}</span>
 
                             <div className="flex gap-2 items-center">
                                 <span className="text-foreground">{formatDistance(video._creationTime, new Date(), { addSuffix: true })}</span>
-                                <Button size={'sm'} asChild>
+                                <Button variant={'link'} size={'sm'} asChild>
                                     <a href={video.link}>Download</a>
                                 </Button>
-                                <Button size={'sm'} variant={'destructive'} onClick={() => deleteVideo({ videoId: video._id })}>
-                                    <Trash2Icon className="size-4" />
+                                <Button size={'sm'} variant={'link'} onClick={() => deleteVideo({ videoId: video._id })}>
+                                    Delete
                                 </Button>
                             </div>
                         </div>
