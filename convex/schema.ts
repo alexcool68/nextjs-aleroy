@@ -30,6 +30,7 @@ export default defineSchema({
         name: v.optional(v.string()),
         email: v.string(),
         image: v.optional(v.string()),
+        role: v.optional(roles),
         orgIds: v.array(
             v.object({
                 orgId: v.string(),

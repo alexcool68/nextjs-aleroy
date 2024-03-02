@@ -29,7 +29,8 @@ export const createUser = internalMutation({
             orgIds: [],
             name: args.name,
             email: args.email,
-            image: args.image
+            image: args.image,
+            role: 'member'
         });
     }
 });
@@ -56,6 +57,24 @@ export const updateUser = internalMutation({
             email: args.email,
             image: args.image
         });
+    }
+});
+
+export const deleteUser = internalMutation({
+    args: {
+        tokenIdentifier: v.string()
+    },
+    async handler(ctx, args) {
+        const user = await ctx.db
+            .query('users')
+            .withIndex('by_tokenIdentifier', (q) => q.eq('tokenIdentifier', args.tokenIdentifier))
+            .first();
+
+        if (!user) {
+            throw new ConvexError('no user with this token found');
+        }
+
+        return await ctx.db.delete(user._id);
     }
 });
 

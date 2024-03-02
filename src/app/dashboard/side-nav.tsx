@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { KeyRoundIcon, LucideIcon, LucideProps } from 'lucide-react';
+import { Key, Users } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -12,14 +12,21 @@ interface MenuInterface {
     href: string;
     icon: React.ReactNode;
 }
-const MENU_DASHBOARD: MenuInterface[] = [];
+const MENU_DASHBOARD: MenuInterface[] = [
+    {
+        label: 'users',
+        title: 'Utilisateurs',
+        href: '/dashboard/users',
+        icon: <Users className="h-4 w-4 mr-2" />
+    }
+];
 
 const MENU_TOOLS: MenuInterface[] = [
     {
         label: 'debrid',
         title: 'Debrideur de liens',
         href: '/dashboard/debrid',
-        icon: <KeyRoundIcon className="h-4 w-4 mr-2" />
+        icon: <Key className="h-4 w-4 mr-2" />
     }
 ];
 

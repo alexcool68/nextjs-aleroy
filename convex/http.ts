@@ -39,6 +39,11 @@ http.route({
                         image: result.data.image_url
                     });
                     break;
+                case 'user.deleted':
+                    await ctx.runMutation(internal.users.deleteUser, {
+                        tokenIdentifier: `${process.env.CLERK_JWT_INSSUER}|${result.data.id}`
+                    });
+                    break;
                 case 'organizationMembership.created':
                     await ctx.runMutation(internal.users.addOrgIdToUser, {
                         tokenIdentifier: `${process.env.CLERK_JWT_INSSUER}|${result.data.public_user_data.user_id}`,

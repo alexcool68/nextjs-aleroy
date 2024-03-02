@@ -16,11 +16,13 @@ import { Film, Trash } from 'lucide-react';
 
 export default function DebridDashboard() {
     const { toast } = useToast();
+
     const [link, setLink] = useState<string>('');
     const [isFetching, setIsFetching] = useState<boolean>(false);
 
     const createVideo = useMutation(api.videos.createVideo);
     const deleteVideo = useMutation(api.videos.deleteVideo);
+
     const videos = useQuery(api.videos.getVideos, { deletedOnly: false });
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
