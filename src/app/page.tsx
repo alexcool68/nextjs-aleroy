@@ -9,12 +9,6 @@ export default function Home() {
                     consectetur doloremque minima ea velit.
                 </p>
             </div>
-            <div className="container bg-secondary p-5 border rounded-md">
-                <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab dolorum harum unde suscipit quibusdam, nisi non natus sapiente ducimus
-                    voluptas quas odio nemo. Sequi beatae eum facilis animi assumenda repellendus!
-                </p>
-            </div>
         </div>
     );
 }
