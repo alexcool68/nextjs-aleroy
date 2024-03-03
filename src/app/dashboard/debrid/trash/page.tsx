@@ -16,7 +16,7 @@ export default function DebridTrashDashboard() {
         <>
             <div className="p-5">
                 <div className="flex flex-row justify-between items-center border-b pb-5">
-                    <h1 className="text-4xl font-medium tracking-wider"># Debrideur de liens</h1>
+                    <h1 className="text-xl lg:text-3xl font-medium tracking-wider"># Debrideur</h1>
                     <Button variant={'secondary'} size={'sm'} asChild>
                         <Link href="/dashboard/debrid" className="flex items-center h-8">
                             <ArrowLeftFromLineIcon className="w-4 h-4 mr-2" /> Back
@@ -35,7 +35,7 @@ export default function DebridTrashDashboard() {
                 {videos &&
                     videos.map((video) => (
                         <div key={video._id} className="flex items-center justify-between gap-5 py-5 border-b">
-                            <span>{video.title}</span>
+                            <span className="truncate">{video.title}</span>
 
                             <div className="flex gap-2 items-center">
                                 <Button size={'sm'} variant={'outline'} onClick={() => restaureVideo({ videoId: video._id })}>

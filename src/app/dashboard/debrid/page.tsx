@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { filesize } from 'filesize';
 
 import { formatDistance } from 'date-fns';
 import { api } from '../../../../convex/_generated/api';
@@ -47,9 +48,11 @@ export default function DebridDashboard() {
         }
 
         if (data.status === 'success') {
+            console.log(data.data);
             createVideo({
                 title: data.data.filename,
-                link: data.data.link
+                link: data.data.link,
+                size: data.data.filesize
             });
             setLink('');
         }
@@ -61,7 +64,7 @@ export default function DebridDashboard() {
         <>
             <div className="p-5">
                 <div className="flex flex-row justify-between items-center border-b pb-5">
-                    <h1 className="text-4xl font-medium tracking-wider"># Debrideur de liens</h1>
+                    <h1 className="text-xl lg:text-3xl font-medium tracking-wider"># Debrideur</h1>
                     <Button variant={'secondary'} size={'sm'} asChild>
                         <Link href="/dashboard/debrid/trash">
                             <Trash className="w-4 h-4 mr-2" /> Trash
@@ -92,10 +95,15 @@ export default function DebridDashboard() {
                 {videos &&
                     videos.map((video) => (
                         <div key={video._id} className="flex items-center justify-between gap-5 py-5 border-b">
-                            <span>{video.title}</span>
+                            <span className="truncate">{video.title}</span>
 
                             <div className="flex gap-2 items-center">
-                                <span className="text-foreground">{formatDistance(video._creationTime, new Date(), { addSuffix: true })}</span>
+                                <div className="hidden lg:flex flex-row gap-5 items-center justify-end ">
+                                    <span>{filesize(video.size, { locale: 'fr' })}</span>
+                                    <span className="text-foreground hidden lg:block">
+                                        {formatDistance(video._creationTime, new Date(), { addSuffix: true })}
+                                    </span>
+                                </div>
                                 <Button variant={'link'} size={'sm'} asChild>
                                     <a href={video.link}>Download</a>
                                 </Button>

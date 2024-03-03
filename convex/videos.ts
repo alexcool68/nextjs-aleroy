@@ -6,7 +6,8 @@ import { ConvexError, v } from 'convex/values';
 export const createVideo = mutation({
     args: {
         title: v.string(),
-        link: v.string()
+        link: v.string(),
+        size: v.number()
     },
     async handler(ctx, args) {
         const identity = await ctx.auth.getUserIdentity();
@@ -24,6 +25,7 @@ export const createVideo = mutation({
         await ctx.db.insert('videos', {
             title: args.title,
             link: args.link,
+            size: args.size,
             userId: user._id
         });
     }

@@ -13,9 +13,10 @@ export default defineSchema({
         .index('by_orgId', ['orgId'])
         .index('by_shouldDelete', ['shouldDelete']),
     videos: defineTable({
-        title: v.string(),
         userId: v.id('users'),
+        title: v.string(),
         link: v.string(),
+        size: v.number(),
         shouldDelete: v.optional(v.boolean())
     })
         .index('by_userId', ['userId'])
