@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Key, Users } from 'lucide-react';
+import { Key, TestTube, Users } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -18,6 +18,12 @@ const MENU_DASHBOARD: MenuInterface[] = [
         title: 'Utilisateurs',
         href: '/dashboard/users',
         icon: <Users className="h-4 w-4 mr-2" />
+    },
+    {
+        label: 'test',
+        title: 'Test',
+        href: '/dashboard/test',
+        icon: <TestTube className="h-4 w-4 mr-2" />
     }
 ];
 
