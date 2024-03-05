@@ -44,4 +44,14 @@ async function getUserList() {
     }
 }
 
-export { getUserList, createInvitation, getInvitationList, revokeInvitation };
+async function deleteUser(userId: string) {
+    try {
+        const user = await clerk.users.deleteUser(userId);
+        const data = JSON.parse(JSON.stringify(user));
+        return data;
+    } catch (error) {
+        return { message: 'Error fetching data' };
+    }
+}
+
+export { getUserList, deleteUser, createInvitation, getInvitationList, revokeInvitation };

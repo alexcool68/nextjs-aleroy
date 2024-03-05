@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Key, TestTube, Users } from 'lucide-react';
+import { Bitcoin, Key, Newspaper, TestTube, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface MenuInterface {
@@ -15,10 +15,16 @@ interface MenuInterface {
 
 const MENU_DASHBOARD: MenuInterface[] = [
     {
-        label: 'test',
-        title: 'Test',
-        href: '/dashboard/test',
-        icon: <TestTube className="h-4 w-4 mr-2" />
+        label: 'articles',
+        title: 'Articles',
+        href: '/dashboard/articles',
+        icon: <Newspaper className="h-4 w-4 mr-2" />
+    },
+    {
+        label: 'cryptos',
+        title: 'Cryptos',
+        href: '/dashboard/cryptos',
+        icon: <Bitcoin className="h-4 w-4 mr-2" />
     }
 ];
 
@@ -118,6 +124,16 @@ export function SideNav({ className, userRole }: SideNavProps) {
                                 </Link>
                             </Button>
                         ))}
+                    </div>
+                </div>
+                <div className="px-3 py-2">
+                    <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">Testing</h2>
+                    <div className="space-y-1">
+                        <Button variant={pathname.includes(`/dashboard/test`) ? 'secondary' : 'ghost'} className="w-full justify-start" asChild>
+                            <Link href="/dashboard/test">
+                                <TestTube className="h-4 w-4 mr-2" /> Test
+                            </Link>
+                        </Button>
                     </div>
                 </div>
             </div>

@@ -2,21 +2,30 @@
 
 import { useEffect, useState } from 'react';
 import { User as typeUser } from '@clerk/backend';
-import { getUserList } from '@/server/clerck-backend';
-import { CpuIcon } from 'lucide-react';
+import { deleteUser, getUserList } from '@/server/clerck-backend';
+import { CpuIcon, Trash } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import NoDataFound from '@/components/no-data-found';
 import TableStatusInvitations from './_components/table-status-invitations';
 import ButtonInviteUser from './_components/button-invite-user';
+import { Button } from '@/components/ui/button';
 
 export default function UsersDashboard() {
     const [userList, setUserList] = useState<typeUser[]>([]);
 
+    const getAllUsersList = () => {
+        getUserList().then((data) => {
+            setUserList(data);
+        });
+    };
+
+    const onDeleteUser = (userId: string) => {
+        deleteUser(userId).then(() => setUserList(userList.filter((item) => userId !== item.id)));
+    };
+
     useEffect(() => {
         try {
-            getUserList().then((data) => {
-                setUserList(data);
-            });
+            getAllUsersList();
         } catch (error) {
             console.log(error);
         }
@@ -25,7 +34,7 @@ export default function UsersDashboard() {
     return (
         <div className="p-5">
             <div className="flex flex-row justify-between items-center border-b pb-5 mb-5">
-                <h1 className="text-xl lg:text-3xl font-medium tracking-wider"># Utilisateurs</h1>
+                <h1 className="text-xl lg:text-3xl font-medium tracking-wider"># Users</h1>
                 <ButtonInviteUser />
             </div>
 
@@ -41,18 +50,32 @@ export default function UsersDashboard() {
                 </div>
             </div>
 
-            <h2 className="text-2xl font-medium tracking-wider my-3">Users from Clerk</h2>
+            <h2 className="text-xl font-medium tracking-wide my-5">Users from Clerk</h2>
             {userList.length === 0 && <NoDataFound />}
 
             {userList.map((user) => (
-                <div key={user.id} className="flex items-center py-2 gap-5">
-                    <Avatar>
-                        {user.hasImage && <AvatarImage src={user.imageUrl} alt={user.emailAddresses[0].emailAddress.slice(0, 2)} />}
-                        <AvatarFallback>{user.emailAddresses[0].emailAddress.slice(0, 2)}</AvatarFallback>
-                    </Avatar>
-
-                    <span>{user.emailAddresses[0].emailAddress}</span>
-                </div>
+                <>
+                    <div key={user.id} className="flex items-center justify-between gap-5 py-5 border-b">
+                        <div className="flex flex-row items-center justify-start gap-5">
+                            <Avatar className="border">
+                                {user.hasImage && <AvatarImage src={user.imageUrl} alt={user.emailAddresses[0].emailAddress.slice(0, 2)} />}
+                                <AvatarFallback>{user.emailAddresses[0].emailAddress.slice(0, 2)}</AvatarFallback>
+                            </Avatar>
+                            <div>{user.emailAddresses[0].emailAddress}</div>
+                            {user.firstName && user.lastName && <div>{`${user.firstName} ${user.lastName}`}</div>}
+                        </div>
+                        <Button
+                            variant={'destructive'}
+                            size={'icon'}
+                            onClick={() => onDeleteUser(user.id)}
+                            disabled={
+                                user.emailAddresses[0].emailAddress == 'alexis.leroy.it@gmail.com' || 'leroy.clement68@gmail.com' ? true : false
+                            }
+                        >
+                            <Trash className="w-4 h-4" />
+                        </Button>
+                    </div>
+                </>
             ))}
         </div>
     );
