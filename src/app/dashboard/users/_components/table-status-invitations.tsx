@@ -1,26 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { InvitationStatus, Invitation as typeInvitation } from '@clerk/backend';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-
 import { format } from 'date-fns';
+import { getInvitationList, revokeInvitation } from '@/server/clerck-backend';
+import { InvitationStatus, Invitation as typeInvitation } from '@clerk/backend';
+import { Calendar, X } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { Calendar, X } from 'lucide-react';
-import { getInvitationList, revokeInvitation } from '@/server/clerck-backend';
 
 interface TableStatusInvitationsProps {
     showElements?: number;
 }
 
 function TableStatusInvitations({ showElements }: TableStatusInvitationsProps) {
+    const [query, setQuery] = useState<InvitationStatus>('accepted');
     const [data, setData] = useState<typeInvitation[]>([]);
-    const [query, setQuery] = useState<InvitationStatus | undefined>('accepted');
 
-    let MAX_ELEMENTS = 5;
-
-    if (showElements) {
-        MAX_ELEMENTS = showElements;
-    }
+    const MAX_ELEMENTS = showElements ?? 5;
 
     const invitationList: any = (status: InvitationStatus) => {
         getInvitationList(status).then((data) => {
@@ -89,9 +84,9 @@ function TableStatusInvitations({ showElements }: TableStatusInvitationsProps) {
                     {data.slice(0, MAX_ELEMENTS).map((invitation) => (
                         <TableRow key={invitation.id}>
                             <TableCell>
-                                <Badge variant={invitation.status === 'accepted' ? 'secondary' : 'default'}>{invitation.status}</Badge>
+                                <Badge variant={'secondary'}>{invitation.status}</Badge>
                             </TableCell>
-                            <TableCell>{format(invitation.createdAt, 'dd MMMM yyy')}</TableCell>
+                            <TableCell>{format(invitation.createdAt, 'dd/MM/yy')}</TableCell>
                             <TableCell>{invitation.emailAddress}</TableCell>
                             <TableCell>
                                 {invitation.status === 'pending' && (
