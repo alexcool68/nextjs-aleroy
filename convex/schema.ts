@@ -17,6 +17,8 @@ export default defineSchema({
         title: v.string(),
         link: v.string(),
         size: v.number(),
+        original: v.string(),
+        isOnServer: v.optional(v.boolean()),
         shouldDelete: v.optional(v.boolean())
     })
         .index('by_userId', ['userId'])

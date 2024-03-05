@@ -6,12 +6,13 @@ import { filesize } from 'filesize';
 import { formatDistance } from 'date-fns';
 
 import { useToast } from '@/components/ui/use-toast';
-import { useMutation, useQuery } from 'convex/react';
+import { useAction, useMutation, useQuery } from 'convex/react';
 import validator from 'validator';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Film, Trash } from 'lucide-react';
+import { Film, RefreshCcw, Trash } from 'lucide-react';
 import { api } from '../../../../../convex/_generated/api';
+import { cn } from '@/lib/utils';
 
 export default function DebridDashboard() {
     const { toast } = useToast();
@@ -21,8 +22,13 @@ export default function DebridDashboard() {
 
     const createVideo = useMutation(api.videos.createVideo);
     const deleteVideo = useMutation(api.videos.deleteVideo);
+    const verifyVideo = useAction(api.videos.verifyVideos);
 
     const videos = useQuery(api.videos.getVideos, { deletedOnly: false });
+
+    const handleVerify = async (item: any) => {
+        await verifyVideo();
+    };
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -46,10 +52,10 @@ export default function DebridDashboard() {
         }
 
         if (data.status === 'success') {
-            console.log(data.data);
             createVideo({
                 title: data.data.filename,
                 link: data.data.link,
+                original: encodeURI(link),
                 size: data.data.filesize
             });
             setLink('');
@@ -63,11 +69,16 @@ export default function DebridDashboard() {
             <div className="p-5">
                 <div className="flex flex-row justify-between items-center border-b pb-5">
                     <h1 className="text-xl lg:text-3xl font-medium tracking-wider"># Debrideur</h1>
-                    <Button variant={'secondary'} size={'sm'} asChild>
-                        <Link href="/dashboard/debrid/trash">
-                            <Trash className="w-4 h-4 mr-2" /> Trash
-                        </Link>
-                    </Button>
+                    <div className="flex flex-row items-center justify-end gap-2">
+                        <Button variant={'secondary'} size={'sm'} onClick={handleVerify}>
+                            <RefreshCcw className="w-4 h-4 mr-2" /> Verify
+                        </Button>
+                        <Button variant={'secondary'} size={'sm'} asChild>
+                            <Link href="/dashboard/debrid/trash">
+                                <Trash className="w-4 h-4 mr-2" /> Trash
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
                 <form onSubmit={handleSubmit} className="flex flex-row gap-5 space-x-5 my-5">
                     <Input
@@ -92,8 +103,9 @@ export default function DebridDashboard() {
 
                 {videos &&
                     videos.map((video) => (
-                        <div key={video._id} className="flex items-center justify-between gap-5 py-5 border-b">
-                            <span className="truncate">{video.title}</span>
+                        <div key={video._id} className="flex items-center justify-start gap-5 py-5 h-12 border-b">
+                            <span className={cn('flex h-2 w-2 translate-y-0 rounded-full', video.isOnServer ? 'bg-sky-500' : 'bg-red-500')} />
+                            <span className="truncate max-w-[200px]">{video.title}</span>
 
                             <div className="flex gap-2 items-center">
                                 <div className="hidden lg:flex flex-row gap-5 items-center justify-end ">

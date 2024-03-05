@@ -1,11 +1,92 @@
+import { internal } from './_generated/api';
 import { Doc } from './_generated/dataModel';
-import { internalMutation, mutation, query } from './_generated/server';
+import { action, internalMutation, internalQuery, mutation, query } from './_generated/server';
 import { getUser } from './users';
 import { ConvexError, v } from 'convex/values';
+
+export const updateData = internalMutation({
+    args: {
+        videoId: v.id('videos'),
+        isOnServer: v.boolean()
+    },
+    handler: async (ctx, args) => {
+        await ctx.db.patch(args.videoId, {
+            isOnServer: args.isOnServer
+        });
+    }
+});
+
+export const readData = internalQuery({
+    args: {},
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+
+        if (!identity) {
+            return null;
+        }
+
+        const user = await getUser(ctx, identity.tokenIdentifier);
+
+        if (!user) {
+            return null;
+        }
+
+        let videos = await ctx.db
+            .query('videos')
+            .withIndex('by_userId', (q) => q.eq('userId', user._id))
+            .collect();
+
+        return videos;
+    }
+});
+
+export const verifyVideos = action({
+    args: {},
+    handler: async (ctx, args) => {
+        const videos = await ctx.runQuery(internal.videos.readData);
+
+        if (!videos) return null;
+
+        let videosArray: string[] = [];
+        videos.map((item) => videosArray.push(item.original));
+
+        console.log(videosArray);
+        console.log(process.env.ALLDEBRID_KEY);
+
+        const response = await fetch(
+            `https://api.alldebrid.com/v4/link/infos?agent=myAppName&apikey=${process.env.ALLDEBRID_KEY}&link[]=${videosArray}`,
+            {
+                method: 'GET'
+            }
+        );
+
+        console.log(await response.json());
+
+        // TODO: Finish the function
+        // videos.map(async (video) => {
+        //     const response = await fetch(
+        //         `https://api.alldebrid.com/v4/link/infos?agent=myAppName&apikey=${process.env.NEXT_PUBLIC_ALLDEBRID_KEY}&link=${encodeURI(video.original)}`,
+        //         {
+        //             method: 'GET'
+        //         }
+        //     );
+
+        //     const data = await response.json();
+
+        //     if (data.status === 'success') {
+        //         await ctx.runMutation(internal.videos.updateData, { videoId: video._id, isOnServer: true });
+        //     }
+        //     if (data.status === 'error') {
+        //         await ctx.runMutation(internal.videos.updateData, { videoId: video._id, isOnServer: false });
+        //     }
+        // });
+    }
+});
 
 export const createVideo = mutation({
     args: {
         title: v.string(),
+        original: v.string(),
         link: v.string(),
         size: v.number()
     },
@@ -26,6 +107,8 @@ export const createVideo = mutation({
             title: args.title,
             link: args.link,
             size: args.size,
+            original: args.original,
+            isOnServer: true,
             userId: user._id
         });
     }
