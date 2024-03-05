@@ -6,7 +6,7 @@ import { useMutation, useQuery } from 'convex/react';
 import { Button } from '@/components/ui/button';
 
 import { ArrowLeftFromLineIcon, Film, Undo2Icon } from 'lucide-react';
-import { api } from '../../../../../convex/_generated/api';
+import { api } from '../../../../../../convex/_generated/api';
 
 export default function DebridTrashDashboard() {
     const videos = useQuery(api.videos.getVideos, { deletedOnly: true });

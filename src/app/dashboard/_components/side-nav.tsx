@@ -1,10 +1,10 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { Key, TestTube, Users } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { Key, TestTube, Users } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface MenuInterface {
     label: string;
@@ -12,18 +12,22 @@ interface MenuInterface {
     href: string;
     icon: React.ReactNode;
 }
+
 const MENU_DASHBOARD: MenuInterface[] = [
-    {
-        label: 'users',
-        title: 'Utilisateurs',
-        href: '/dashboard/users',
-        icon: <Users className="h-4 w-4 mr-2" />
-    },
     {
         label: 'test',
         title: 'Test',
         href: '/dashboard/test',
         icon: <TestTube className="h-4 w-4 mr-2" />
+    }
+];
+
+const MENU_BACKEND: MenuInterface[] = [
+    {
+        label: 'users',
+        title: 'Utilisateurs',
+        href: '/dashboard/users',
+        icon: <Users className="h-4 w-4 mr-2" />
     }
 ];
 
@@ -56,7 +60,25 @@ export function SideNav({ className, userRole }: SideNavProps) {
                                 key={item.label}
                                 variant={pathname.includes(`${item.href}`) ? 'secondary' : 'ghost'}
                                 className="w-full justify-start"
-                                asChild>
+                                asChild
+                            >
+                                <Link href={item.href}>
+                                    {item.icon} {item.title}
+                                </Link>
+                            </Button>
+                        ))}
+                    </div>
+                </div>
+                <div className="px-3 py-2">
+                    <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">Backend</h2>
+                    <div className="space-y-1">
+                        {MENU_BACKEND.map((item) => (
+                            <Button
+                                key={item.label}
+                                variant={pathname.includes(`${item.href}`) ? 'secondary' : 'ghost'}
+                                className="w-full justify-start"
+                                asChild
+                            >
                                 <Link href={item.href}>
                                     {item.icon} {item.title}
                                 </Link>
@@ -72,7 +94,8 @@ export function SideNav({ className, userRole }: SideNavProps) {
                                 key={item.label}
                                 variant={pathname.includes(`${item.href}`) ? 'secondary' : 'ghost'}
                                 className="w-full justify-start"
-                                asChild>
+                                asChild
+                            >
                                 <Link href={item.href}>
                                     {item.icon} {item.title}
                                 </Link>
@@ -88,7 +111,8 @@ export function SideNav({ className, userRole }: SideNavProps) {
                                 key={item.label}
                                 variant={pathname.includes(`${item.href}`) ? 'secondary' : 'ghost'}
                                 className="w-full justify-start"
-                                asChild>
+                                asChild
+                            >
                                 <Link href={item.href}>
                                     {item.icon} {item.title}
                                 </Link>
