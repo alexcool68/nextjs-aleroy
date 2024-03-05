@@ -1,22 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader2, UserPlus } from 'lucide-react';
 import { createInvitation } from '@/server/clerck-backend';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { DialogHeader, DialogTrigger, DialogContent, DialogTitle, DialogDescription, Dialog } from '@/components/ui/dialog';
+import { DialogHeader, DialogTrigger, DialogContent, DialogTitle, Dialog } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
 const formSchema = z.object({
-    email: z.string()
+    email: z.string().min(1, { message: 'This field has to be filled.' }).email('This is not a valid email.')
 });
 
-function ButtonAddUser() {
-    const { toast } = useToast();
+interface ButtonInviteUserProps {}
+function ButtonInviteUser({}: ButtonInviteUserProps) {
     const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
+    const { toast } = useToast();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -48,6 +49,12 @@ function ButtonAddUser() {
         }
     }
 
+    useEffect(() => {
+        if (!isFileDialogOpen) {
+            form.reset();
+        }
+    }, [isFileDialogOpen]);
+
     return (
         <Dialog
             open={isFileDialogOpen}
@@ -56,13 +63,13 @@ function ButtonAddUser() {
             }}>
             <DialogTrigger asChild>
                 <Button>
-                    <UserPlus className="w-4 h-4 mr-2" /> Add
+                    <UserPlus className="w-4 h-4 mr-2" /> Invite
                 </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle className="mb-8">Upload your File Here</DialogTitle>
-                    <DialogDescription>This file will be accessible by anyone in your organization</DialogDescription>
+                    <DialogTitle className="mb-8">Invite an new user to the application</DialogTitle>
+                    {/* <DialogDescription>Enter the email address of the user</DialogDescription> */}
                 </DialogHeader>
                 <div>
                     <Form {...form}>
@@ -83,7 +90,7 @@ function ButtonAddUser() {
 
                             <Button type="submit" disabled={form.formState.isSubmitting} className="flex gap-1">
                                 {form.formState.isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
-                                Submit
+                                Invite now !
                             </Button>
                         </form>
                     </Form>
@@ -93,4 +100,4 @@ function ButtonAddUser() {
     );
 }
 
-export default ButtonAddUser;
+export default ButtonInviteUser;

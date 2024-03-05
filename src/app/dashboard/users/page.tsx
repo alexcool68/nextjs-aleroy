@@ -1,25 +1,21 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { User as typeUser, Invitation as typeInvitation } from '@clerk/backend';
-import { getUserList, getInvitationList } from '@/server/clerck-backend';
-import { Calendar, CpuIcon } from 'lucide-react';
+import { User as typeUser } from '@clerk/backend';
+import { getUserList } from '@/server/clerck-backend';
+import { CpuIcon } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import NoDataFound from '@/components/no-data-found';
-import ButtonAddUser from './_components/button-add-user';
-import InvitationsStatus from './_components/invitations-status';
+import TableStatusInvitations from './_components/table-status-invitations';
+import ButtonInviteUser from './_components/button-invite-user';
 
 export default function UsersDashboard() {
     const [userList, setUserList] = useState<typeUser[]>([]);
-    const [invitationList, setInvitationList] = useState<typeInvitation[]>([]);
 
     useEffect(() => {
         try {
             getUserList().then((data) => {
                 setUserList(data);
-            });
-            getInvitationList().then((data) => {
-                setInvitationList(data);
             });
         } catch (error) {
             console.log(error);
@@ -30,16 +26,12 @@ export default function UsersDashboard() {
         <div className="p-5">
             <div className="flex flex-row justify-between items-center border-b pb-5 mb-5">
                 <h1 className="text-xl lg:text-3xl font-medium tracking-wider"># Utilisateurs</h1>
-                <ButtonAddUser />
+                <ButtonInviteUser />
             </div>
 
             <div className="grid grid-cols-2 gap-5">
                 <div className="border rounded-lg p-5">
-                    <h3 className="text-sm text-muted-foreground flex items-center gap-2 my-2">
-                        <Calendar size={16} />
-                        Invitations status
-                    </h3>
-                    <InvitationsStatus data={invitationList} />
+                    <TableStatusInvitations showElements={3} />
                 </div>
                 <div className="border rounded-lg p-5">
                     <h3 className="text-sm text-muted-foreground flex items-center gap-2 my-2">
