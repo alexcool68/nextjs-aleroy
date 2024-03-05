@@ -38,9 +38,11 @@ const MENU_TOOLS: MenuInterface[] = [
 
 const MENU_SETTINGS: MenuInterface[] = [];
 
-interface SideNavProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface SideNavProps extends React.HTMLAttributes<HTMLDivElement> {
+    userRole?: string;
+}
 
-export function SideNav({ className }: SideNavProps) {
+export function SideNav({ className, userRole }: SideNavProps) {
     const pathname = usePathname();
 
     return (
