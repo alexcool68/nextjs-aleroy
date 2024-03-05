@@ -52,7 +52,8 @@ function TableStatusInvitations({ showElements }: TableStatusInvitationsProps) {
                 size={'sm'}
                 value={query}
                 variant={'outline'}
-                className="my-5">
+                className="my-5"
+            >
                 <ToggleGroupItem value="accepted" aria-label="Toggle accepted">
                     Accepted
                 </ToggleGroupItem>

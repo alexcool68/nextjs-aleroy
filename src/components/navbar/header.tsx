@@ -22,10 +22,8 @@ export function Header() {
                     <SignedIn>
                         <Link
                             href="/"
-                            className={cn(
-                                'text-secondary-foreground border-b-2 px-1 py-2',
-                                pathname === '/' ? 'border-primary' : 'border-secondary'
-                            )}>
+                            className={cn('text-secondary-foreground border-b-2 px-1 py-2', pathname === '/' ? 'border-primary' : 'border-secondary')}
+                        >
                             Home
                         </Link>
                         <Link
@@ -33,7 +31,8 @@ export function Header() {
                             className={cn(
                                 'text-secondary-foreground border-b-2 px-1 py-2',
                                 pathname.includes('/dashboard') ? 'border-primary' : 'border-secondary'
-                            )}>
+                            )}
+                        >
                             Dashboard
                         </Link>
                     </SignedIn>

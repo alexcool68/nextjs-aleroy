@@ -7,7 +7,8 @@
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
-        "prettier:log": "prettier --check --ignore-path .gitignore .vscode ."
+        "format": "prettier --check .",
+        "format:fix": "prettier --write --list-different ."
     },
     "dependencies": {
         "@clerk/backend": "^0.38.3",

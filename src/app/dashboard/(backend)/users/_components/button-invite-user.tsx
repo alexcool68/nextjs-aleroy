@@ -60,7 +60,8 @@ function ButtonInviteUser({}: ButtonInviteUserProps) {
             open={isFileDialogOpen}
             onOpenChange={(isOpen) => {
                 setIsFileDialogOpen(isOpen);
-            }}>
+            }}
+        >
             <DialogTrigger asChild>
                 <Button variant={'secondary'} size={'sm'}>
                     <UserPlus className="w-4 h-4 mr-2" /> Invite
