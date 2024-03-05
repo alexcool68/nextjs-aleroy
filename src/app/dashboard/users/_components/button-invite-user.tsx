@@ -53,7 +53,7 @@ function ButtonInviteUser({}: ButtonInviteUserProps) {
         if (!isFileDialogOpen) {
             form.reset();
         }
-    }, [isFileDialogOpen]);
+    }, [isFileDialogOpen, form]);
 
     return (
         <Dialog
