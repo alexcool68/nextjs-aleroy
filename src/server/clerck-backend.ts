@@ -2,11 +2,11 @@
 
 import { Clerk, InvitationStatus } from '@clerk/nextjs/server';
 
-const CLERK_SK = process.env.CLERK_SECRET_KEY;
+const clerk = Clerk({ apiKey: process.env.CLERK_SECRET_KEY });
 
 async function getUserList() {
     try {
-        const clerk = Clerk({ apiKey: CLERK_SK });
+        // const clerk = Clerk({ apiKey: CLERK_SK });
 
         const list = await clerk.users.getUserList();
 
@@ -18,11 +18,11 @@ async function getUserList() {
     }
 }
 
-async function getInvitationList(status: InvitationStatus) {
+async function getInvitationList(status?: InvitationStatus) {
     try {
-        const clerk = Clerk({ apiKey: CLERK_SK });
+        // const clerk = Clerk({ apiKey: CLERK_SK });
 
-        const list = await clerk.invitations.getInvitationList({ status: status });
+        const list = await clerk.invitations.getInvitationList({ status: status == null ? undefined : status });
 
         const data = JSON.parse(JSON.stringify(list));
 
@@ -34,7 +34,7 @@ async function getInvitationList(status: InvitationStatus) {
 
 async function createInvitation(email: string) {
     try {
-        const clerk = Clerk({ apiKey: CLERK_SK });
+        // const clerk = Clerk({ apiKey: CLERK_SK });
 
         const list = await clerk.invitations.createInvitation({ emailAddress: email });
 
