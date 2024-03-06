@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Film, RefreshCcw, Trash } from 'lucide-react';
 import { api } from '../../../../../convex/_generated/api';
-import { cn } from '@/lib/utils';
+import { cn, validateVideoLinkRegex } from '@/lib/utils';
 
 export default function DebridDashboard() {
     const { toast } = useToast();
@@ -25,6 +25,7 @@ export default function DebridDashboard() {
     const verifyVideo = useAction(api.videos.verifyVideos);
 
     const videos = useQuery(api.videos.getVideos, { deletedOnly: false });
+    const notTrashedVideo = videos && videos.length === 0 ? true : false;
 
     const handleVerify = async (item: any) => {
         await verifyVideo();
@@ -33,11 +34,19 @@ export default function DebridDashboard() {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
+        const valideVideoLink = validateVideoLinkRegex(link);
+
         if (!validator.isURL(link)) {
             toast({ description: 'this is not a valid url' });
         }
 
+        if (valideVideoLink === null) {
+            toast({ description: 'this is not a 1fichier.com domain' });
+            return null;
+        }
+
         setIsFetching(true);
+
         const response = await fetch(
             `https://api.alldebrid.com/v4/link/unlock?agent=myAppName&apikey=${process.env.NEXT_PUBLIC_ALLDEBRID_KEY}&link=${encodeURI(link)}`,
             {
@@ -55,7 +64,7 @@ export default function DebridDashboard() {
             createVideo({
                 title: data.data.filename,
                 link: data.data.link,
-                original: encodeURI(link),
+                original: valideVideoLink[0],
                 size: data.data.filesize
             });
             setLink('');
@@ -70,7 +79,7 @@ export default function DebridDashboard() {
                 <div className="flex flex-row justify-between items-center border-b pb-5">
                     <h1 className="text-xl lg:text-3xl font-medium tracking-wider"># Debrideur</h1>
                     <div className="flex flex-row items-center justify-end gap-2">
-                        <Button variant={'secondary'} size={'sm'} onClick={handleVerify}>
+                        <Button variant={'secondary'} size={'sm'} onClick={handleVerify} disabled={notTrashedVideo}>
                             <RefreshCcw className="w-4 h-4 mr-2" /> Verify
                         </Button>
                         <Button variant={'secondary'} size={'sm'} asChild>
@@ -103,9 +112,11 @@ export default function DebridDashboard() {
 
                 {videos &&
                     videos.map((video) => (
-                        <div key={video._id} className="flex items-center justify-start gap-5 py-5 h-12 border-b">
-                            <span className={cn('flex h-2 w-2 translate-y-0 rounded-full', video.isOnServer ? 'bg-sky-500' : 'bg-red-500')} />
-                            <span className="truncate max-w-[200px]">{video.title}</span>
+                        <div key={video._id} className="flex items-center justify-between gap-5 py-5 h-12 border-b">
+                            <div className="flex items-center gap-5">
+                                <span className={cn('flex h-2 w-2 translate-y-0 rounded-full', video.isOnServer ? 'bg-sky-500' : 'bg-red-500')} />
+                                <span className="truncate max-w-[340px]">{video.title}</span>
+                            </div>
 
                             <div className="flex gap-2 items-center">
                                 <div className="hidden lg:flex flex-row gap-5 items-center justify-end ">

@@ -4,82 +4,49 @@ import { action, internalMutation, internalQuery, mutation, query } from './_gen
 import { getUser } from './users';
 import { ConvexError, v } from 'convex/values';
 
-export const updateData = internalMutation({
-    args: {
-        videoId: v.id('videos'),
-        isOnServer: v.boolean()
-    },
-    handler: async (ctx, args) => {
-        await ctx.db.patch(args.videoId, {
-            isOnServer: args.isOnServer
-        });
-    }
-});
-
-export const readData = internalQuery({
-    args: {},
-    handler: async (ctx, args) => {
-        const identity = await ctx.auth.getUserIdentity();
-
-        if (!identity) {
-            return null;
-        }
-
-        const user = await getUser(ctx, identity.tokenIdentifier);
-
-        if (!user) {
-            return null;
-        }
-
-        let videos = await ctx.db
-            .query('videos')
-            .withIndex('by_userId', (q) => q.eq('userId', user._id))
-            .collect();
-
-        return videos;
-    }
-});
+function alldebridUrl(queryString: string) {
+    return 'https://api.alldebrid.com/v4/link/infos?agent=myAppName&apikey=' + process.env.ALLDEBRID_KEY + queryString;
+}
 
 export const verifyVideos = action({
     args: {},
     handler: async (ctx, args) => {
-        const videos = await ctx.runQuery(internal.videos.readData);
+        const userVideos = await ctx.runQuery(internal.videos.getVideosInternal);
 
-        if (!videos) return null;
+        if (!userVideos) return null;
 
-        let videosArray: string[] = [];
-        videos.map((item) => videosArray.push(item.original));
+        let videosLinkString = '';
 
-        console.log(videosArray);
-        console.log(process.env.ALLDEBRID_KEY);
+        userVideos.map((video) => (videosLinkString += encodeURI(`&link[]=${video.original}`)));
 
-        const response = await fetch(
-            `https://api.alldebrid.com/v4/link/infos?agent=myAppName&apikey=${process.env.ALLDEBRID_KEY}&link[]=${videosArray}`,
-            {
-                method: 'GET'
-            }
-        );
+        // Call Link Info
+        const data = await fetch(alldebridUrl(videosLinkString), { method: 'GET' });
 
-        console.log(await response.json());
+        const json = await data.json();
 
-        // TODO: Finish the function
-        // videos.map(async (video) => {
-        //     const response = await fetch(
-        //         `https://api.alldebrid.com/v4/link/infos?agent=myAppName&apikey=${process.env.NEXT_PUBLIC_ALLDEBRID_KEY}&link=${encodeURI(video.original)}`,
-        //         {
-        //             method: 'GET'
-        //         }
-        //     );
+        if (json.status === 'error') {
+            throw new Error(`Alldebrid errored: ${JSON.stringify(json)}`);
+        }
 
-        //     const data = await response.json();
+        if (json.status === 'success') {
+            await Promise.all(
+                json.data.infos.map(async (info: any) => {
+                    const isVideoAvailable = userVideos.find((el) => el.original == info.link);
+                    if (!isVideoAvailable) return null;
 
-        //     if (data.status === 'success') {
-        //         await ctx.runMutation(internal.videos.updateData, { videoId: video._id, isOnServer: true });
-        //     }
-        //     if (data.status === 'error') {
-        //         await ctx.runMutation(internal.videos.updateData, { videoId: video._id, isOnServer: false });
-        //     }
-        // });
+                    await ctx.runMutation(internal.videos.setIsOnServerFalseInternal, { videoId: isVideoAvailable._id });
+
+                    if (!info.error) {
+                        await ctx.runMutation(internal.videos.updateVideoInternal, {
+                            videoId: isVideoAvailable._id,
+                            title: info.filename,
+                            size: info.size,
+                            isOnServer: true
+                        });
+                    }
+                })
+            );
+        }
     }
 });
 
@@ -145,6 +112,30 @@ export const getVideos = query({
     }
 });
 
+export const getVideosInternal = internalQuery({
+    args: {},
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+
+        if (!identity) {
+            return null;
+        }
+
+        const user = await getUser(ctx, identity.tokenIdentifier);
+
+        if (!user) {
+            return null;
+        }
+
+        let videos = await ctx.db
+            .query('videos')
+            .withIndex('by_userId', (q) => q.eq('userId', user._id))
+            .collect();
+
+        return videos;
+    }
+});
+
 export const deleteVideo = mutation({
     args: {
         videoId: v.id('videos')
@@ -172,6 +163,22 @@ export const deleteVideo = mutation({
 
         await ctx.db.patch(args.videoId, {
             shouldDelete: true
+        });
+    }
+});
+
+export const updateVideoInternal = internalMutation({
+    args: {
+        videoId: v.id('videos'),
+        title: v.string(),
+        size: v.number(),
+        isOnServer: v.boolean()
+    },
+    handler: async (ctx, args) => {
+        await ctx.db.patch(args.videoId, {
+            title: args.title,
+            size: args.size,
+            isOnServer: args.isOnServer
         });
     }
 });
@@ -205,7 +212,7 @@ export const restoreVideo = mutation({
     }
 });
 
-export const deleteAllVideos = internalMutation({
+export const deleteAllVideosInternal = internalMutation({
     args: {},
     async handler(ctx) {
         const videos = await ctx.db
@@ -218,6 +225,17 @@ export const deleteAllVideos = internalMutation({
                 return await ctx.db.delete(video._id);
             })
         );
+    }
+});
+
+export const setIsOnServerFalseInternal = internalMutation({
+    args: {
+        videoId: v.id('videos')
+    },
+    handler: async (ctx, args) => {
+        await ctx.db.patch(args.videoId, {
+            isOnServer: false
+        });
     }
 });
 

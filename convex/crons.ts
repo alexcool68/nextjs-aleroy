@@ -4,6 +4,6 @@ import { internal } from './_generated/api';
 const crons = cronJobs();
 
 crons.interval('delete any old files marked for deletion', { minutes: 5 }, internal.todos.deleteAllTodos);
-crons.interval('delete any old video marked for deletion', { minutes: 5 }, internal.videos.deleteAllVideos);
+crons.interval('delete any old video marked for deletion', { minutes: 5 }, internal.videos.deleteAllVideosInternal);
 
 export default crons;

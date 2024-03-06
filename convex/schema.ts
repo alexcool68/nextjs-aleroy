@@ -22,7 +22,8 @@ export default defineSchema({
         shouldDelete: v.optional(v.boolean())
     })
         .index('by_userId', ['userId'])
-        .index('by_shouldDelete', ['shouldDelete']),
+        .index('by_shouldDelete', ['shouldDelete'])
+        .index('by_userId_shouldDelete', ['userId', 'shouldDelete']),
     favorites: defineTable({
         todoId: v.id('todos'),
         orgId: v.string(),
