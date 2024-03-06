@@ -54,28 +54,24 @@ export default function UsersDashboard() {
             {userList.length === 0 && <NoDataFound />}
 
             {userList.map((user) => (
-                <>
-                    <div key={user.id} className="flex items-center justify-between gap-5 py-5 border-b">
-                        <div className="flex flex-row items-center justify-start gap-5">
-                            <Avatar className="border">
-                                {user.hasImage && <AvatarImage src={user.imageUrl} alt={user.emailAddresses[0].emailAddress.slice(0, 2)} />}
-                                <AvatarFallback>{user.emailAddresses[0].emailAddress.slice(0, 2)}</AvatarFallback>
-                            </Avatar>
-                            <div>{user.emailAddresses[0].emailAddress}</div>
-                            {user.firstName && user.lastName && <div>{`${user.firstName} ${user.lastName}`}</div>}
-                        </div>
-                        <Button
-                            variant={'destructive'}
-                            size={'icon'}
-                            onClick={() => onDeleteUser(user.id)}
-                            disabled={
-                                user.emailAddresses[0].emailAddress == 'alexis.leroy.it@gmail.com' || 'leroy.clement68@gmail.com' ? true : false
-                            }
-                        >
-                            <Trash className="w-4 h-4" />
-                        </Button>
+                <div key={user.id} className="flex items-center justify-between gap-5 py-5 border-b">
+                    <div className="flex flex-row items-center justify-start gap-5">
+                        <Avatar className="border">
+                            {user.hasImage && <AvatarImage src={user.imageUrl} alt={user.emailAddresses[0].emailAddress.slice(0, 2)} />}
+                            <AvatarFallback>{user.emailAddresses[0].emailAddress.slice(0, 2)}</AvatarFallback>
+                        </Avatar>
+                        <div>{user.emailAddresses[0].emailAddress}</div>
+                        {user.firstName && user.lastName && <div>{`${user.firstName} ${user.lastName}`}</div>}
                     </div>
-                </>
+                    <Button
+                        variant={'destructive'}
+                        size={'icon'}
+                        onClick={() => onDeleteUser(user.id)}
+                        disabled={user.emailAddresses[0].emailAddress == 'alexis.leroy.it@gmail.com' || 'leroy.clement68@gmail.com' ? true : false}
+                    >
+                        <Trash className="w-4 h-4" />
+                    </Button>
+                </div>
             ))}
         </div>
     );

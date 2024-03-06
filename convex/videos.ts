@@ -129,7 +129,7 @@ export const getVideosInternal = internalQuery({
 
         let videos = await ctx.db
             .query('videos')
-            .withIndex('by_userId', (q) => q.eq('userId', user._id))
+            .withIndex('by_userId_shouldDelete', (q) => q.eq('userId', user._id).eq('shouldDelete', false))
             .collect();
 
         return videos;

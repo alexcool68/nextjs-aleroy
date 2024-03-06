@@ -13,22 +13,32 @@ import { Input } from '@/components/ui/input';
 import { Film, RefreshCcw, Trash } from 'lucide-react';
 import { api } from '../../../../../convex/_generated/api';
 import { cn, validateVideoLinkRegex } from '@/lib/utils';
+import { Separator } from '@/components/ui/separator';
 
 export default function DebridDashboard() {
     const { toast } = useToast();
 
     const [link, setLink] = useState<string>('');
     const [isFetching, setIsFetching] = useState<boolean>(false);
+    const [isVerifying, setIsVerifying] = useState<boolean>(false);
 
     const createVideo = useMutation(api.videos.createVideo);
     const deleteVideo = useMutation(api.videos.deleteVideo);
     const verifyVideo = useAction(api.videos.verifyVideos);
 
     const videos = useQuery(api.videos.getVideos, { deletedOnly: false });
+
     const notTrashedVideo = videos && videos.length === 0 ? true : false;
 
     const handleVerify = async (item: any) => {
-        await verifyVideo();
+        setIsVerifying(true);
+
+        try {
+            await verifyVideo().then(() => setIsVerifying(false));
+        } catch (err) {
+            console.log(err);
+            setIsVerifying(false);
+        }
     };
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -80,7 +90,7 @@ export default function DebridDashboard() {
                     <h1 className="text-xl lg:text-3xl font-medium tracking-wider"># Debrideur</h1>
                     <div className="flex flex-row items-center justify-end gap-2">
                         <Button variant={'secondary'} size={'sm'} onClick={handleVerify} disabled={notTrashedVideo}>
-                            <RefreshCcw className="w-4 h-4 mr-2" /> Verify
+                            <RefreshCcw className={cn('w-4 h-4 mr-2', isVerifying ? 'animate-spin' : null)} /> Verify
                         </Button>
                         <Button variant={'secondary'} size={'sm'} asChild>
                             <Link href="/dashboard/debrid/trash">
@@ -114,13 +124,19 @@ export default function DebridDashboard() {
                     videos.map((video) => (
                         <div key={video._id} className="flex items-center justify-between gap-5 py-5 h-12 border-b">
                             <div className="flex items-center gap-5">
-                                <span className={cn('flex h-2 w-2 translate-y-0 rounded-full', video.isOnServer ? 'bg-sky-500' : 'bg-red-500')} />
+                                <span
+                                    className={cn(
+                                        'flex h-2 w-2 translate-y-0 rounded-full animate-pulse',
+                                        video.isOnServer ? 'bg-sky-500' : 'bg-red-500'
+                                    )}
+                                />
                                 <span className="truncate max-w-[340px]">{video.title}</span>
                             </div>
 
                             <div className="flex gap-2 items-center">
-                                <div className="hidden lg:flex flex-row gap-5 items-center justify-end ">
+                                <div className="hidden lg:flex flex-row h-6 gap-3 items-center justify-end ">
                                     <span>{filesize(video.size, { locale: 'fr' })}</span>
+                                    <Separator orientation="vertical" className="" />
                                     <span className="text-foreground hidden lg:block">
                                         {formatDistance(video._creationTime, new Date(), { addSuffix: true })}
                                     </span>
