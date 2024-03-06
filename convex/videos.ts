@@ -76,6 +76,7 @@ export const createVideo = mutation({
             size: args.size,
             original: args.original,
             isOnServer: true,
+            shouldDelete: false,
             userId: user._id
         });
     }
