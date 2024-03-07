@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 
 import { ArrowLeftFromLineIcon, Film, Undo2Icon } from 'lucide-react';
 import { api } from '../../../../../../convex/_generated/api';
+import TitleHeader from '@/app/dashboard/_components/title-header';
 
 export default function DebridTrashDashboard() {
     const videos = useQuery(api.videos.getVideos, { deletedOnly: true });
@@ -15,14 +16,15 @@ export default function DebridTrashDashboard() {
     return (
         <>
             <div className="p-5">
-                <div className="flex flex-row justify-between items-center border-b pb-5">
-                    <h1 className="text-xl lg:text-3xl font-medium tracking-wider"># Debrideur</h1>
-                    <Button variant={'secondary'} size={'sm'} asChild>
-                        <Link href="/dashboard/debrid" className="flex items-center h-8">
-                            <ArrowLeftFromLineIcon className="w-4 h-4 mr-2" /> Back
-                        </Link>
-                    </Button>
-                </div>
+                <TitleHeader title="Debrid">
+                    <div className="flex flex-row items-center justify-end gap-2">
+                        <Button variant={'secondary'} size={'sm'} asChild>
+                            <Link href="/dashboard/debrid" className="flex items-center h-8">
+                                <ArrowLeftFromLineIcon className="w-4 h-4 mr-2" /> Back
+                            </Link>
+                        </Button>
+                    </div>
+                </TitleHeader>
 
                 {videos?.length === 0 && (
                     <div className="flex items-center justify-center bg-background/45 border-2 border-dotted rounded-2xl my-5 py-20">

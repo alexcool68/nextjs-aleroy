@@ -14,6 +14,7 @@ import { Film, RefreshCcw, Trash } from 'lucide-react';
 import { api } from '../../../../../convex/_generated/api';
 import { cn, validateVideoLinkRegex } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
+import TitleHeader from '../../_components/title-header';
 
 export default function DebridDashboard() {
     const { toast } = useToast();
@@ -86,8 +87,7 @@ export default function DebridDashboard() {
     return (
         <>
             <div className="p-5">
-                <div className="flex flex-row justify-between items-center border-b pb-5">
-                    <h1 className="text-xl lg:text-3xl font-medium tracking-wider"># Debrideur</h1>
+                <TitleHeader title="Debrid">
                     <div className="flex flex-row items-center justify-end gap-2">
                         <Button variant={'secondary'} size={'sm'} onClick={handleVerify} disabled={notTrashedVideo}>
                             <RefreshCcw className={cn('w-4 h-4 mr-2', isVerifying ? 'animate-spin' : null)} /> Verify
@@ -98,7 +98,8 @@ export default function DebridDashboard() {
                             </Link>
                         </Button>
                     </div>
-                </div>
+                </TitleHeader>
+
                 <form onSubmit={handleSubmit} className="flex flex-row gap-5 space-x-5 my-5">
                     <Input
                         name="link"

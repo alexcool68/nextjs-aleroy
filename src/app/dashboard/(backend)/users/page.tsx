@@ -9,6 +9,9 @@ import NoDataFound from '@/components/no-data-found';
 import TableStatusInvitations from './_components/table-status-invitations';
 import ButtonInviteUser from './_components/button-invite-user';
 import { Button } from '@/components/ui/button';
+import TitleHeader from '../../_components/title-header';
+
+const SAFE_EMAIL = ['alexis.leroy.it@gmail.com', 'leroy.clement68@gmail.com'];
 
 export default function UsersDashboard() {
     const [userList, setUserList] = useState<typeUser[]>([]);
@@ -32,18 +35,17 @@ export default function UsersDashboard() {
     }, []);
 
     return (
-        <div className="p-5">
-            <div className="flex flex-row justify-between items-center border-b pb-5 mb-5">
-                <h1 className="text-xl lg:text-3xl font-medium tracking-wider"># Users</h1>
+        <div className="md:p-5">
+            <TitleHeader title="Users">
                 <ButtonInviteUser />
-            </div>
+            </TitleHeader>
 
-            <div className="grid grid-cols-2 gap-5">
-                <div className="border rounded-lg p-5">
+            <div className="grid grid-rows-1 lg:grid-cols-2 gap-5">
+                <div className="border rounded-lg">
                     <TableStatusInvitations showElements={3} />
                 </div>
-                <div className="border rounded-lg p-5">
-                    <h3 className="text-sm text-muted-foreground flex items-center gap-2 my-2">
+                <div className="border rounded-lg">
+                    <h3 className="text-sm text-muted-foreground flex items-center gap-2 my-2 px-2">
                         <CpuIcon size={16} />
                         Other stuff
                     </h3>
@@ -54,20 +56,23 @@ export default function UsersDashboard() {
             {userList.length === 0 && <NoDataFound />}
 
             {userList.map((user) => (
-                <div key={user.id} className="flex items-center justify-between gap-5 py-5 border-b">
-                    <div className="flex flex-row items-center justify-start gap-5">
+                <div key={user.id} className="flex items-center justify-between gap-5 py-2 lg:py-5 border-b">
+                    <div className="flex flex-row items-center justify-start gap-2 lg:gap-5">
                         <Avatar className="border">
                             {user.hasImage && <AvatarImage src={user.imageUrl} alt={user.emailAddresses[0].emailAddress.slice(0, 2)} />}
                             <AvatarFallback>{user.emailAddresses[0].emailAddress.slice(0, 2)}</AvatarFallback>
                         </Avatar>
-                        <div>{user.emailAddresses[0].emailAddress}</div>
-                        {user.firstName && user.lastName && <div>{`${user.firstName} ${user.lastName}`}</div>}
+
+                        <div className="flex flex-col lg:flex-row lg:gap-5 items-start justify-center">
+                            <div>{user.emailAddresses[0].emailAddress}</div>
+                            {user.firstName && user.lastName && <div>{`${user.firstName} ${user.lastName}`}</div>}
+                        </div>
                     </div>
                     <Button
                         variant={'destructive'}
                         size={'icon'}
                         onClick={() => onDeleteUser(user.id)}
-                        disabled={user.emailAddresses[0].emailAddress == 'alexis.leroy.it@gmail.com' || 'leroy.clement68@gmail.com' ? true : false}
+                        disabled={user.emailAddresses.some((email) => SAFE_EMAIL.includes(email.emailAddress)) ? true : false}
                     >
                         <Trash className="w-4 h-4" />
                     </Button>

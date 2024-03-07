@@ -14,7 +14,7 @@ export default function DashboardLayout({
     return (
         <main className="container mx-auto pt-12 min-h-screen">
             <div className="flex gap-8">
-                <SideNav className="hidden lg:block" userRole={profile?.role} />
+                <SideNav className="hidden md:flex md:rounded-lg md:border" userRole={profile?.role} />
 
                 <div className="w-full">{children}</div>
             </div>

@@ -3,6 +3,7 @@
 import { Input } from '@/components/ui/input';
 import { validateVideoLinkRegex } from '@/lib/utils';
 import { useEffect, useState } from 'react';
+import TitleHeader from '../_components/title-header';
 
 function TestingDashboard() {
     const [inputText, setInputText] = useState('');
@@ -31,9 +32,7 @@ function TestingDashboard() {
 
     return (
         <div className="p-5">
-            <div className="flex flex-row justify-between items-center border-b pb-5 mb-5">
-                <h1 className="text-xl lg:text-3xl font-medium tracking-wider"># Testing</h1>
-            </div>
+            <TitleHeader title="Testing"></TitleHeader>
 
             <div>
                 <Input name="testing" value={inputText} onChange={(e) => setInputText(e.target.value)} />

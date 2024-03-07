@@ -3,9 +3,7 @@ import { format } from 'date-fns';
 import { getInvitationList, revokeInvitation } from '@/server/clerck-backend';
 import { InvitationStatus, Invitation as typeInvitation } from '@clerk/backend';
 import { Calendar, X } from 'lucide-react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 interface TableStatusInvitationsProps {
     showElements?: number;
@@ -41,18 +39,19 @@ function TableStatusInvitations({ showElements }: TableStatusInvitationsProps) {
 
     return (
         <>
-            <h3 className="text-sm text-muted-foreground flex items-center gap-2 my-2">
+            <h3 className="text-sm text-muted-foreground flex items-center gap-2 my-2 px-2">
                 <Calendar size={16} />
-                Invitations status (latest {MAX_ELEMENTS} elements)
+                Invitations status (latest {MAX_ELEMENTS})
             </h3>
-            <ToggleGroup
+
+            {/* <ToggleGroup
                 type="single"
                 defaultValue="accepted"
                 onValueChange={(e: InvitationStatus) => setQuery(e)}
                 size={'sm'}
                 value={query}
                 variant={'outline'}
-                className="my-5"
+                className=""
             >
                 <ToggleGroupItem value="accepted" aria-label="Toggle accepted">
                     Accepted
@@ -63,41 +62,41 @@ function TableStatusInvitations({ showElements }: TableStatusInvitationsProps) {
                 <ToggleGroupItem value="revoked" aria-label="Toggle revoked">
                     Revoked
                 </ToggleGroupItem>
-            </ToggleGroup>
+            </ToggleGroup> */}
 
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead></TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {data.length === 0 && (
-                        <TableRow>
-                            <TableCell colSpan={3} className="text-center">
-                                No data
-                            </TableCell>
-                        </TableRow>
-                    )}
-                    {data.slice(0, MAX_ELEMENTS).map((invitation) => (
-                        <TableRow key={invitation.id}>
-                            <TableCell>
-                                <Badge variant={'secondary'}>{invitation.status}</Badge>
-                            </TableCell>
-                            <TableCell>{format(invitation.createdAt, 'dd/MM/yy')}</TableCell>
-                            <TableCell>{invitation.emailAddress}</TableCell>
-                            <TableCell>
-                                {invitation.status === 'pending' && (
-                                    <X size={16} onClick={() => onRevokeHandler(invitation.id)} className="cursor-pointer" />
-                                )}
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+            <div className="px-2 py-1">
+                <div className="flex items-center justify-center gap-2 cursor-pointer">
+                    <Badge variant={query === 'accepted' ? 'default' : 'secondary'} onClick={() => setQuery('accepted')}>
+                        Accepted
+                    </Badge>
+                    <Badge variant={query === 'pending' ? 'default' : 'secondary'} onClick={() => setQuery('pending')}>
+                        Pending
+                    </Badge>
+                    <Badge variant={query === 'revoked' ? 'default' : 'secondary'} onClick={() => setQuery('revoked')}>
+                        Revoked
+                    </Badge>
+                </div>
+            </div>
+
+            {data.length === 0 && (
+                <div className="py-4">
+                    <div className="text-center text-sm">No data</div>
+                </div>
+            )}
+
+            <div className="py-1">
+                {data.slice(0, MAX_ELEMENTS).map((invitation) => (
+                    <div key={invitation.id} className="flex items-center justify-start gap-2 border-b h-10 last:border-0 px-2 text-sm">
+                        <div className="text-muted">{format(invitation.createdAt, 'dd/MM/yy')}</div>
+                        <div>{invitation.emailAddress}</div>
+                        <div>
+                            {invitation.status === 'pending' && (
+                                <X size={16} onClick={() => onRevokeHandler(invitation.id)} className="cursor-pointer" />
+                            )}
+                        </div>
+                    </div>
+                ))}
+            </div>
         </>
     );
 }

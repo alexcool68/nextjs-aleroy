@@ -56,87 +56,89 @@ export function SideNav({ className, userRole }: SideNavProps) {
     const pathname = usePathname();
 
     return (
-        <div className={cn('pb-12', className)}>
-            <div className="space-y-4 py-4">
-                <div className="px-3 py-2">
-                    <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">Dashboard</h2>
-                    <div className="space-y-1">
-                        {MENU_DASHBOARD.map((item) => (
-                            <Button
-                                key={item.label}
-                                variant={pathname.includes(`${item.href}`) ? 'secondary' : 'ghost'}
-                                className="w-full justify-start"
-                                asChild
-                            >
-                                <Link href={item.href}>
-                                    {item.icon} {item.title}
+        <>
+            <div className={cn('pb-12', className)}>
+                <div className="space-y-4 py-4">
+                    <div className="px-3 py-2">
+                        <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">Dashboard</h2>
+                        <div className="space-y-1">
+                            {MENU_DASHBOARD.map((item) => (
+                                <Button
+                                    key={item.label}
+                                    variant={pathname.includes(`${item.href}`) ? 'secondary' : 'ghost'}
+                                    className="w-full justify-start"
+                                    asChild
+                                >
+                                    <Link href={item.href}>
+                                        {item.icon} {item.title}
+                                    </Link>
+                                </Button>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="px-3 py-2">
+                        <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">Backend</h2>
+                        <div className="space-y-1">
+                            {MENU_BACKEND.map((item) => (
+                                <Button
+                                    key={item.label}
+                                    variant={pathname.includes(`${item.href}`) ? 'secondary' : 'ghost'}
+                                    className="w-full justify-start"
+                                    asChild
+                                >
+                                    <Link href={item.href}>
+                                        {item.icon} {item.title}
+                                    </Link>
+                                </Button>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="px-3 py-2">
+                        <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">Outils</h2>
+                        <div className="space-y-1">
+                            {MENU_TOOLS.map((item) => (
+                                <Button
+                                    key={item.label}
+                                    variant={pathname.includes(`${item.href}`) ? 'secondary' : 'ghost'}
+                                    className="w-full justify-start"
+                                    asChild
+                                >
+                                    <Link href={item.href}>
+                                        {item.icon} {item.title}
+                                    </Link>
+                                </Button>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="px-3 py-2">
+                        <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">Testing</h2>
+                        <div className="space-y-1">
+                            <Button variant={pathname.includes(`/dashboard/test`) ? 'secondary' : 'ghost'} className="w-full justify-start" asChild>
+                                <Link href="/dashboard/test">
+                                    <TestTube className="h-4 w-4 mr-2" /> Test
                                 </Link>
                             </Button>
-                        ))}
+                        </div>
                     </div>
-                </div>
-                <div className="px-3 py-2">
-                    <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">Backend</h2>
-                    <div className="space-y-1">
-                        {MENU_BACKEND.map((item) => (
-                            <Button
-                                key={item.label}
-                                variant={pathname.includes(`${item.href}`) ? 'secondary' : 'ghost'}
-                                className="w-full justify-start"
-                                asChild
-                            >
-                                <Link href={item.href}>
-                                    {item.icon} {item.title}
-                                </Link>
-                            </Button>
-                        ))}
-                    </div>
-                </div>
-                <div className="px-3 py-2">
-                    <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">Outils</h2>
-                    <div className="space-y-1">
-                        {MENU_TOOLS.map((item) => (
-                            <Button
-                                key={item.label}
-                                variant={pathname.includes(`${item.href}`) ? 'secondary' : 'ghost'}
-                                className="w-full justify-start"
-                                asChild
-                            >
-                                <Link href={item.href}>
-                                    {item.icon} {item.title}
-                                </Link>
-                            </Button>
-                        ))}
-                    </div>
-                </div>
-                <div className="px-3 py-2">
-                    <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">Testing</h2>
-                    <div className="space-y-1">
-                        <Button variant={pathname.includes(`/dashboard/test`) ? 'secondary' : 'ghost'} className="w-full justify-start" asChild>
-                            <Link href="/dashboard/test">
-                                <TestTube className="h-4 w-4 mr-2" /> Test
-                            </Link>
-                        </Button>
-                    </div>
-                </div>
-                <div className="px-3 py-2">
-                    <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">Settings</h2>
-                    <div className="space-y-1">
-                        {MENU_SETTINGS.map((item) => (
-                            <Button
-                                key={item.label}
-                                variant={pathname.includes(`${item.href}`) ? 'secondary' : 'ghost'}
-                                className="w-full justify-start"
-                                asChild
-                            >
-                                <Link href={item.href}>
-                                    {item.icon} {item.title}
-                                </Link>
-                            </Button>
-                        ))}
+                    <div className="px-3 py-2">
+                        <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">Settings</h2>
+                        <div className="space-y-1">
+                            {MENU_SETTINGS.map((item) => (
+                                <Button
+                                    key={item.label}
+                                    variant={pathname.includes(`${item.href}`) ? 'secondary' : 'ghost'}
+                                    className="w-full justify-start"
+                                    asChild
+                                >
+                                    <Link href={item.href}>
+                                        {item.icon} {item.title}
+                                    </Link>
+                                </Button>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }

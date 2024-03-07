@@ -56,48 +56,51 @@ function ButtonInviteUser({}: ButtonInviteUserProps) {
     }, [isFileDialogOpen, form]);
 
     return (
-        <Dialog
-            open={isFileDialogOpen}
-            onOpenChange={(isOpen) => {
-                setIsFileDialogOpen(isOpen);
-            }}
-        >
-            <DialogTrigger asChild>
-                <Button variant={'secondary'} size={'sm'}>
-                    <UserPlus className="w-4 h-4 mr-2" /> Invite
-                </Button>
-            </DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle className="mb-8">Invite an new user to the application</DialogTitle>
-                    {/* <DialogDescription>Enter the email address of the user</DialogDescription> */}
-                </DialogHeader>
-                <div>
-                    <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                            <FormField
-                                control={form.control}
-                                name="email"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Email</FormLabel>
-                                        <FormControl>
-                                            <Input {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+        <>
+            <Dialog
+                open={isFileDialogOpen}
+                onOpenChange={(isOpen) => {
+                    setIsFileDialogOpen(isOpen);
+                }}
+            >
+                <DialogTrigger asChild>
+                    <Button variant={'secondary'} size={'sm'}>
+                        <UserPlus className="w-4 h-4 mr-2" /> Invite
+                    </Button>
+                </DialogTrigger>
 
-                            <Button type="submit" disabled={form.formState.isSubmitting} className="flex gap-1">
-                                {form.formState.isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
-                                Invite now !
-                            </Button>
-                        </form>
-                    </Form>
-                </div>
-            </DialogContent>
-        </Dialog>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle className="mb-8">Invite an new user</DialogTitle>
+                        {/* <DialogDescription>Enter the email address of the user</DialogDescription> */}
+                    </DialogHeader>
+                    <div>
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                                <FormField
+                                    control={form.control}
+                                    name="email"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Email</FormLabel>
+                                            <FormControl>
+                                                <Input {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <Button type="submit" disabled={form.formState.isSubmitting} className="flex gap-1">
+                                    {form.formState.isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
+                                    Invite now !
+                                </Button>
+                            </form>
+                        </Form>
+                    </div>
+                </DialogContent>
+            </Dialog>
+        </>
     );
 }
 
