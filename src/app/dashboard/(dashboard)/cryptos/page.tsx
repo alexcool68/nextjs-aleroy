@@ -3,7 +3,7 @@ import TitleHeader from '../../_components/title-header';
 
 export default function CryptosDashboard() {
     return (
-        <div className="p-5">
+        <div className="md:p-5">
             <TitleHeader title="Cryptos" />
         </div>
     );

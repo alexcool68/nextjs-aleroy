@@ -15,7 +15,7 @@ export default function DebridTrashDashboard() {
 
     return (
         <>
-            <div className="p-5">
+            <div className="md:p-5">
                 <TitleHeader title="Debrid">
                     <div className="flex flex-row items-center justify-end gap-2">
                         <Button variant={'secondary'} size={'sm'} asChild>

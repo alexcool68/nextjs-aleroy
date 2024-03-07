@@ -57,6 +57,14 @@ export function SideNav({ className, userRole }: SideNavProps) {
 
     return (
         <>
+            {/* <div className="flex flex-row gap-5 border">
+                {MENU_DASHBOARD.map((item) => (
+                    <Link href={item.href}>
+                        {item.icon} {item.title}
+                    </Link>
+                ))}
+            </div> */}
+
             <div className={cn('pb-12', className)}>
                 <div className="space-y-4 py-4">
                     <div className="px-3 py-2">

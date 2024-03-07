@@ -31,7 +31,7 @@ function TestingDashboard() {
     }, [inputText]);
 
     return (
-        <div className="p-5">
+        <div className="md:p-5">
             <TitleHeader title="Testing"></TitleHeader>
 
             <div>

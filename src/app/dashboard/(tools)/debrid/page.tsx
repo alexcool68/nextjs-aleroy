@@ -88,7 +88,7 @@ export default function DebridDashboard() {
 
     return (
         <>
-            <div className="p-5">
+            <div className="md:p-5">
                 <TitleHeader title="Debrid">
                     <div className="flex flex-row items-center justify-end gap-2">
                         <Button variant={'secondary'} size={'sm'} onClick={handleVerify} disabled={notTrashedVideo}>
@@ -122,13 +122,16 @@ export default function DebridDashboard() {
                 <div className="flex flex-col gap-5">
                     {videos &&
                         videos.map((video) => (
-                            <Card>
+                            <Card key={video._id} className="">
                                 <CardHeader>
-                                    <CardTitle className="flex flex-row items-center text-sm lg:text-xl">
-                                        <CircleDashed
-                                            className={cn('-mb-1 mr-2 size-3 animate-pulse', video.isOnServer ? 'text-sky-500' : 'text-red-500')}
-                                        />
-                                        <div className="flex-grow">
+                                    <CardTitle className="flex flex-row items-center justify-start text-sm lg:text-xl">
+                                        <div className="flex items-center">
+                                            <CircleDashed
+                                                className={cn(
+                                                    '-mb-0 size-3 lg:-mb-1 mr-2 md:size-4 animate-pulse',
+                                                    video.isOnServer ? 'text-sky-500' : 'text-red-500'
+                                                )}
+                                            />
                                             <div className="hidden md:flex">{video.title}</div>
                                             <div className="md:hidden"> {truncateLongString(video.title, 25)}</div>
                                         </div>
