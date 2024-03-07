@@ -10,11 +10,13 @@ import { useAction, useMutation, useQuery } from 'convex/react';
 import validator from 'validator';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Film, RefreshCcw, Trash } from 'lucide-react';
+import { CircleDashed, Film, RefreshCcw, Trash } from 'lucide-react';
 import { api } from '../../../../../convex/_generated/api';
-import { cn, validateVideoLinkRegex } from '@/lib/utils';
-import { Separator } from '@/components/ui/separator';
+import { cn, truncateLongString, validateVideoLinkRegex } from '@/lib/utils';
 import TitleHeader from '../../_components/title-header';
+import NoDataFound from '@/components/no-data-found';
+import { Separator } from '@/components/ui/separator';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function DebridDashboard() {
     const { toast } = useToast();
@@ -90,17 +92,19 @@ export default function DebridDashboard() {
                 <TitleHeader title="Debrid">
                     <div className="flex flex-row items-center justify-end gap-2">
                         <Button variant={'secondary'} size={'sm'} onClick={handleVerify} disabled={notTrashedVideo}>
-                            <RefreshCcw className={cn('w-4 h-4 mr-2', isVerifying ? 'animate-spin' : null)} /> Verify
+                            <RefreshCcw className={cn('w-4 h-4 lg:mr-2', isVerifying ? 'animate-spin' : null)} />
+                            <span className="hidden lg:block">Verify</span>
                         </Button>
                         <Button variant={'secondary'} size={'sm'} asChild>
                             <Link href="/dashboard/debrid/trash">
-                                <Trash className="w-4 h-4 mr-2" /> Trash
+                                <Trash className="w-4 h-4 lg:mr-2" />
+                                <span className="hidden lg:block">Trash</span>
                             </Link>
                         </Button>
                     </div>
                 </TitleHeader>
 
-                <form onSubmit={handleSubmit} className="flex flex-row gap-5 space-x-5 my-5">
+                <form onSubmit={handleSubmit} className="flex flex-col lg:flex-row gap-2 my-5">
                     <Input
                         name="link"
                         placeholder="https://1fichier.com/?xyz"
@@ -113,44 +117,38 @@ export default function DebridDashboard() {
                     </Button>
                 </form>
 
-                {videos?.length === 0 && (
-                    <div className="flex items-center justify-center bg-background/45 border-2 border-dotted rounded-2xl my-5 py-20">
-                        <div className="flex items-center text-2xl text-muted-foreground">
-                            <Film className="size-10 mr-5" /> No data found
-                        </div>
-                    </div>
-                )}
+                {videos?.length === 0 && <NoDataFound />}
 
-                {videos &&
-                    videos.map((video) => (
-                        <div key={video._id} className="flex items-center justify-between gap-5 py-5 h-12 border-b">
-                            <div className="flex items-center gap-5">
-                                <span
-                                    className={cn(
-                                        'flex h-2 w-2 translate-y-0 rounded-full animate-pulse',
-                                        video.isOnServer ? 'bg-sky-500' : 'bg-red-500'
-                                    )}
-                                />
-                                <span className="truncate max-w-[340px]">{video.title}</span>
-                            </div>
-
-                            <div className="flex gap-2 items-center">
-                                <div className="hidden lg:flex flex-row h-6 gap-3 items-center justify-end ">
-                                    <span>{filesize(video.size, { locale: 'fr' })}</span>
-                                    <Separator orientation="vertical" className="" />
-                                    <span className="text-foreground hidden lg:block">
-                                        {formatDistance(video._creationTime, new Date(), { addSuffix: true })}
-                                    </span>
-                                </div>
-                                <Button variant={'link'} size={'sm'} asChild>
-                                    <a href={video.link}>Download</a>
-                                </Button>
-                                <Button size={'sm'} variant={'link'} onClick={() => deleteVideo({ videoId: video._id })}>
-                                    Delete
-                                </Button>
-                            </div>
-                        </div>
-                    ))}
+                <div className="flex flex-col gap-5">
+                    {videos &&
+                        videos.map((video) => (
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex flex-row items-center text-sm lg:text-xl">
+                                        <CircleDashed
+                                            className={cn('-mb-1 mr-2 size-3 animate-pulse', video.isOnServer ? 'text-sky-500' : 'text-red-500')}
+                                        />
+                                        <div className="flex-grow">
+                                            <div className="hidden md:flex">{video.title}</div>
+                                            <div className="md:hidden"> {truncateLongString(video.title, 25)}</div>
+                                        </div>
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="text-muted-foreground text-sm">Size : {filesize(video.size, { locale: 'fr' })}</div>
+                                    <div className="text-muted-foreground text-sm">Last check : </div>
+                                </CardContent>
+                                <CardFooter className="flex justify-between">
+                                    <Button variant={'secondary'} size={'sm'} asChild>
+                                        <a href={video.link}>Download</a>
+                                    </Button>
+                                    <Button variant={'outline'} size={'sm'} onClick={() => deleteVideo({ videoId: video._id })}>
+                                        <Trash className="w-4 h-4" />
+                                    </Button>
+                                </CardFooter>
+                            </Card>
+                        ))}
+                </div>
             </div>
         </>
     );

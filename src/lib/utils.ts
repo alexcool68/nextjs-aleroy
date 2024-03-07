@@ -11,3 +11,7 @@ export function validateVideoLinkRegex(url: string) {
     if (regex.exec === null) return null;
     return regex.exec(url);
 }
+
+export function truncateLongString(text: string, n: number, separator: string = ' ...') {
+    return text.length > n ? text.slice(0, n - 1) + separator : text;
+}
