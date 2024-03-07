@@ -28,6 +28,11 @@ export default function UsersDashboard() {
     const onDeleteUser = async (userId: string) => {
         try {
             const result = await deleteUser(userId);
+
+            if (result.message) {
+                toast({ description: result.message });
+            }
+
             if (result.deleted) {
                 setUserList(userList.filter((item) => userId !== item.id));
                 toast({ description: 'User deleted' });
