@@ -36,7 +36,8 @@ http.route({
                         tokenIdentifier: `${process.env.CLERK_JWT_INSSUER}|${result.data.id}`,
                         name: `${result.data.first_name ?? ''} ${result.data.last_name ?? ''}`,
                         email: result.data.email_addresses[0].email_address ?? '',
-                        image: result.data.image_url
+                        image: result.data.image_url,
+                        role: result.data.public_metadata.role === 'admin' ? 'admin' : 'member'
                     });
                     break;
                 case 'user.deleted':

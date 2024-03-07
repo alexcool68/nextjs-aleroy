@@ -1,6 +1,7 @@
 'use server';
 
 import { Clerk, InvitationStatus } from '@clerk/nextjs/server';
+import { checkRole } from '@/lib/roles';
 
 const clerk = Clerk({ secretKey: process.env.CLERK_SECRET_KEY });
 
@@ -45,6 +46,10 @@ async function getUserList() {
 }
 
 async function deleteUser(userId: string) {
+    if (!checkRole('admin')) {
+        return { message: 'Not Authorized' };
+    }
+
     try {
         const user = await clerk.users.deleteUser(userId);
         const data = JSON.parse(JSON.stringify(user));
@@ -54,4 +59,18 @@ async function deleteUser(userId: string) {
     }
 }
 
-export { getUserList, deleteUser, createInvitation, getInvitationList, revokeInvitation };
+async function setRole(id: string, role: string) {
+    if (!checkRole('admin')) {
+        return { message: 'Not Authorized' };
+    }
+
+    try {
+        const res = await clerk.users.updateUser(id, {
+            publicMetadata: { role: role }
+        });
+        return { message: res.publicMetadata };
+    } catch (err) {
+        return { message: err };
+    }
+}
+export { getUserList, deleteUser, createInvitation, getInvitationList, revokeInvitation, setRole };

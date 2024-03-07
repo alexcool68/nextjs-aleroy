@@ -3,17 +3,20 @@
 import { useEffect, useState } from 'react';
 import { User as typeUser } from '@clerk/backend';
 import { deleteUser, getUserList } from '@/server/clerck-backend';
-import { CpuIcon, Trash } from 'lucide-react';
+import { CpuIcon, Crown, Trash } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import NoDataFound from '@/components/no-data-found';
 import TableStatusInvitations from './_components/table-status-invitations';
 import ButtonInviteUser from './_components/button-invite-user';
 import { Button } from '@/components/ui/button';
 import TitleHeader from '../../_components/title-header';
+import { cn } from '@/lib/utils';
+import { useToast } from '@/components/ui/use-toast';
 
 const SAFE_EMAIL = ['alexis.leroy.it@gmail.com', 'leroy.clement68@gmail.com'];
 
 export default function UsersDashboard() {
+    const { toast } = useToast();
     const [userList, setUserList] = useState<typeUser[]>([]);
 
     const getAllUsersList = () => {
@@ -22,8 +25,17 @@ export default function UsersDashboard() {
         });
     };
 
-    const onDeleteUser = (userId: string) => {
-        deleteUser(userId).then(() => setUserList(userList.filter((item) => userId !== item.id)));
+    const onDeleteUser = async (userId: string) => {
+        try {
+            const result = await deleteUser(userId);
+            if (result.deleted) {
+                setUserList(userList.filter((item) => userId !== item.id));
+                toast({ description: 'User deleted' });
+            }
+        } catch (error) {
+            toast({ description: 'Something went wrong' });
+            console.log(error);
+        }
     };
 
     useEffect(() => {
@@ -57,17 +69,20 @@ export default function UsersDashboard() {
 
             {userList.map((user) => (
                 <div key={user.id} className="flex items-center justify-between gap-5 py-2 lg:py-5 border-b">
-                    <div className="flex flex-row items-center justify-start gap-2 lg:gap-5">
+                    <div className="flex flex-row items-center justify-start gap-2 lg:gap-5 text-sm lg:text-md">
                         <Avatar className="border">
                             {user.hasImage && <AvatarImage src={user.imageUrl} alt={user.emailAddresses[0].emailAddress.slice(0, 2)} />}
                             <AvatarFallback>{user.emailAddresses[0].emailAddress.slice(0, 2)}</AvatarFallback>
                         </Avatar>
+
+                        <Crown className={cn('size-4', (user.publicMetadata.role as string) === 'admin' ? 'text-primary' : 'text-muted')} />
 
                         <div className="flex flex-col lg:flex-row lg:gap-5 items-start justify-center">
                             <div>{user.emailAddresses[0].emailAddress}</div>
                             {user.firstName && user.lastName && <div>{`${user.firstName} ${user.lastName}`}</div>}
                         </div>
                     </div>
+
                     <Button
                         variant={'destructive'}
                         size={'icon'}

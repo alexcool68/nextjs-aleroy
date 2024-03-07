@@ -40,7 +40,8 @@ export const updateUser = internalMutation({
         tokenIdentifier: v.string(),
         name: v.string(),
         email: v.string(),
-        image: v.string()
+        image: v.string(),
+        role: roles
     },
     async handler(ctx, args) {
         const user = await ctx.db
@@ -55,7 +56,8 @@ export const updateUser = internalMutation({
         await ctx.db.patch(user._id, {
             name: args.name,
             email: args.email,
-            image: args.image
+            image: args.image,
+            role: args.role
         });
     }
 });
