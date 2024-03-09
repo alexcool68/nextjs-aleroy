@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { BrainCircuitIcon } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 export function Header() {
     const pathname = usePathname();
@@ -13,12 +14,13 @@ export function Header() {
     return (
         <div className="relative z-10 border-b w-full">
             <div className="container flex h-20 items-center justify-between">
-                <Link href="/" className="flex items-center gap-5">
-                    <BrainCircuitIcon className="size-10 text-primary/75" />
+                <Link href="/" className="inline-flex items-center gap-5">
+                    {/* <BrainCircuitIcon className="size-10 text-primary/75" /> */}
+                    <Image src={'/logo.png'} alt="alexis logo" width={64} height={64} className="relative size-8 lg:size-16" />
                     <div className="text-2xl font-semibold tracking-wider hidden md:block">Alexis LEROY</div>
                 </Link>
 
-                <div className="flex items-center gap-8">
+                <div className="flex items-center gap-5">
                     <SignedIn>
                         <Link
                             href="/"
