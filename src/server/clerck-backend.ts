@@ -1,23 +1,29 @@
 'use server';
 
-import { Clerk, InvitationStatus } from '@clerk/nextjs/server';
+import { clerkClient } from '@clerk/nextjs';
 import { checkRole } from '@/lib/roles';
 
-const clerk = Clerk({ secretKey: process.env.CLERK_SECRET_KEY });
+import { InvitationStatus } from '@clerk/backend';
 
 async function createInvitation(email: string) {
     try {
-        const list = await clerk.invitations.createInvitation({ emailAddress: email });
-        const data = JSON.parse(JSON.stringify(list));
-        return data;
+        const invitation = await clerkClient.invitations.createInvitation({
+            emailAddress: email,
+            notify: true,
+            ignoreExisting: true,
+            publicMetadata: {
+                role: 'member'
+            }
+        });
+        return invitation;
     } catch (error) {
-        return { message: 'Error fetching data' };
+        return { message: 'Error invitation' };
     }
 }
 
 async function getInvitationList(status?: InvitationStatus) {
     try {
-        const list = await clerk.invitations.getInvitationList({ status: status == null ? undefined : status });
+        const list = await clerkClient.invitations.getInvitationList({ status: status == null ? undefined : status });
         const data = JSON.parse(JSON.stringify(list));
         return data;
     } catch (error) {
@@ -27,7 +33,7 @@ async function getInvitationList(status?: InvitationStatus) {
 
 async function revokeInvitation(invitationId: string) {
     try {
-        const list = await clerk.invitations.revokeInvitation(invitationId);
+        const list = await clerkClient.invitations.revokeInvitation(invitationId);
         const data = JSON.parse(JSON.stringify(list));
         return data;
     } catch (error) {
@@ -37,7 +43,7 @@ async function revokeInvitation(invitationId: string) {
 
 async function getUserList() {
     try {
-        const list = await clerk.users.getUserList();
+        const list = await clerkClient.users.getUserList();
         const data = JSON.parse(JSON.stringify(list));
         return data;
     } catch (error) {
@@ -51,7 +57,7 @@ async function deleteUser(userId: string) {
     }
 
     try {
-        const user = await clerk.users.deleteUser(userId);
+        const user = await clerkClient.users.deleteUser(userId);
         const data = JSON.parse(JSON.stringify(user));
         return data;
     } catch (error) {
@@ -65,7 +71,7 @@ async function setRole(id: string, role: string) {
     }
 
     try {
-        const res = await clerk.users.updateUser(id, {
+        const res = await clerkClient.users.updateUser(id, {
             publicMetadata: { role: role }
         });
         return { message: res.publicMetadata };
