@@ -1,19 +1,28 @@
 'use client';
 
 import { useState } from 'react';
+
 import Link from 'next/link';
-import { filesize } from 'filesize';
-import { useToast } from '@/components/ui/use-toast';
+
 import { useAction, useMutation, useQuery } from 'convex/react';
+import { api } from '../../../../../convex/_generated/api';
+
+import { formatDistance } from 'date-fns';
+import { fr } from 'date-fns/locale';
+import { filesize } from 'filesize';
 import validator from 'validator';
+
+import { CircleDashed, RefreshCcw, Trash } from 'lucide-react';
+
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CircleDashed, RefreshCcw, Trash } from 'lucide-react';
-import { api } from '../../../../../convex/_generated/api';
-import { cn, truncateLongString, validateVideoLinkRegex } from '@/lib/utils';
-import TitleHeader from '../../_components/title-header';
 import NoDataFound from '@/components/no-data-found';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+
+import { cn, truncateLongString, validateVideoLinkRegex } from '@/lib/utils';
+
+import TitleHeader from '../../_components/title-header';
 
 export default function DebridDashboard() {
     const { toast } = useToast();
@@ -136,7 +145,12 @@ export default function DebridDashboard() {
                                 </CardHeader>
                                 <CardContent>
                                     <div className="text-muted-foreground text-sm">Size : {filesize(video.size, { locale: 'fr' })}</div>
-                                    <div className="text-muted-foreground text-sm">Last check : </div>
+                                    <div className="text-muted-foreground text-sm">
+                                        Last check :{' '}
+                                        {video.verfiedAt
+                                            ? formatDistance(new Date(video.verfiedAt), new Date(), { locale: fr, addSuffix: true })
+                                            : 'not verified'}
+                                    </div>
                                 </CardContent>
                                 <CardFooter className="flex justify-between">
                                     <Button variant={'secondary'} size={'sm'} asChild>

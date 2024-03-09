@@ -19,7 +19,10 @@ export function TopNavMobile({ className, userRole }: TopNavMobileProps) {
                     item.menu.map((submenu) => (
                         <Link
                             href={submenu.href}
-                            className={cn('pb-2 border-b-2', pathname.includes(submenu.href) ? 'border-accent-foreground' : 'border-secondary')}
+                            className={cn(
+                                'pb-2 border-b-2 text-sm',
+                                pathname.includes(submenu.href) ? 'border-accent-foreground' : 'border-secondary'
+                            )}
                         >
                             {submenu.title}
                         </Link>

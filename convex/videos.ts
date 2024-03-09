@@ -235,7 +235,8 @@ export const setIsOnServerFalseInternal = internalMutation({
     },
     handler: async (ctx, args) => {
         await ctx.db.patch(args.videoId, {
-            isOnServer: false
+            isOnServer: false,
+            verfiedAt: Date.now()
         });
     }
 });

@@ -19,7 +19,8 @@ export default defineSchema({
         size: v.number(),
         original: v.string(),
         isOnServer: v.optional(v.boolean()),
-        shouldDelete: v.optional(v.boolean())
+        shouldDelete: v.optional(v.boolean()),
+        verfiedAt: v.optional(v.float64())
     })
         .index('by_userId', ['userId'])
         .index('by_shouldDelete', ['shouldDelete'])
