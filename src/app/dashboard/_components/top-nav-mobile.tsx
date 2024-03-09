@@ -16,8 +16,9 @@ export function TopNavMobile({ className, userRole }: TopNavMobileProps) {
         <>
             <div className={cn('', className)}>
                 {MAIN_MENU.map((item) =>
-                    item.menu.map((submenu) => (
+                    item.menu.map((submenu, _idx) => (
                         <Link
+                            key={_idx}
                             href={submenu.href}
                             className={cn(
                                 'pb-2 border-b-2 text-sm',
