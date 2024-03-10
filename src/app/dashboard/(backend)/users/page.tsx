@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { User as typeUser } from '@clerk/backend';
-import { deleteUser, getUserList } from '@/server/clerck-backend';
+import { deleteUser, getUserList, setRole } from '@/server/clerck-backend';
 import { CpuIcon, Crown, Trash } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import NoDataFound from '@/components/no-data-found';
 import TableStatusInvitations from './_components/table-status-invitations';
 import ButtonInviteUser from './_components/button-invite-user';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import TitleHeader from '../../_components/title-header';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
@@ -39,6 +40,15 @@ export default function UsersDashboard() {
             }
         } catch (error) {
             toast({ description: 'Something went wrong' });
+            console.log(error);
+        }
+    };
+
+    const changeRole = async (userId: string, role: string) => {
+        try {
+            await setRole(userId, role);
+            getAllUsersList();
+        } catch (error) {
             console.log(error);
         }
     };
@@ -80,22 +90,42 @@ export default function UsersDashboard() {
                             <AvatarFallback>{user.emailAddresses[0].emailAddress.slice(0, 2)}</AvatarFallback>
                         </Avatar>
 
-                        <Crown className={cn('size-4', (user.publicMetadata.role as string) === 'admin' ? 'text-primary' : 'text-muted')} />
+                        <Crown
+                            className={cn(
+                                'size-4',
+
+                                (user.publicMetadata.role as string) === 'admin'
+                                    ? 'text-primary'
+                                    : (user.publicMetadata.role as string) === 'member'
+                                      ? 'text-muted-foreground'
+                                      : 'text-muted'
+                            )}
+                        />
 
                         <div className="flex flex-col lg:flex-row lg:gap-5 items-start justify-center">
                             <div>{user.emailAddresses[0].emailAddress}</div>
                             {user.firstName && user.lastName && <div>{`${user.firstName} ${user.lastName}`}</div>}
                         </div>
                     </div>
-
-                    <Button
-                        variant={'destructive'}
-                        size={'icon'}
-                        onClick={() => onDeleteUser(user.id)}
-                        disabled={user.emailAddresses.some((email) => SAFE_EMAIL.includes(email.emailAddress)) ? true : false}
-                    >
-                        <Trash className="w-4 h-4" />
-                    </Button>
+                    <div className="hidden sm:flex space-x-2 items-center">
+                        <Select onValueChange={(e) => changeRole(user.id, e)} value={user.publicMetadata.role as string}>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Role" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="admin">Admin</SelectItem>
+                                <SelectItem value="member">Member</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <Button
+                            variant={'destructive'}
+                            size={'icon'}
+                            onClick={() => onDeleteUser(user.id)}
+                            disabled={user.emailAddresses.some((email) => SAFE_EMAIL.includes(email.emailAddress)) ? true : false}
+                        >
+                            <Trash className="w-4 h-4" />
+                        </Button>
+                    </div>
                 </div>
             ))}
         </div>

@@ -71,12 +71,13 @@ async function setRole(id: string, role: string) {
     }
 
     try {
-        const res = await clerkClient.users.updateUser(id, {
+        await clerkClient.users.updateUser(id, {
             publicMetadata: { role: role }
         });
-        return { message: res.publicMetadata };
+        return null;
     } catch (err) {
         return { message: err };
     }
 }
+
 export { getUserList, deleteUser, createInvitation, getInvitationList, revokeInvitation, setRole };
