@@ -4,6 +4,9 @@ const nextConfig = {
         remotePatterns: [
             {
                 hostname: 'adept-hare-684.convex.cloud'
+            },
+            {
+                hostname: 'img.clerk.com'
             }
         ]
     }

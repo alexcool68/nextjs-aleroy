@@ -33,7 +33,7 @@ export default function RootLayout({
                     <Header />
                     {children}
                     <Footer />
-                    <Analytics />
+                    <Analytics debug={false} />
                 </ConvexClientProvider>
             </body>
         </html>
