@@ -17,6 +17,7 @@ import type {
 import type * as clerk from "../clerk.js";
 import type * as crons from "../crons.js";
 import type * as http from "../http.js";
+import type * as posts from "../posts.js";
 import type * as todos from "../todos.js";
 import type * as users from "../users.js";
 import type * as videos from "../videos.js";
@@ -33,6 +34,7 @@ declare const fullApi: ApiFromModules<{
   clerk: typeof clerk;
   crons: typeof crons;
   http: typeof http;
+  posts: typeof posts;
   todos: typeof todos;
   users: typeof users;
   videos: typeof videos;
