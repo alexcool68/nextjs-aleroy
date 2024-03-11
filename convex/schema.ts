@@ -12,15 +12,17 @@ export default defineSchema({
     })
         .index('by_orgId', ['orgId'])
         .index('by_shouldDelete', ['shouldDelete']),
-    posts: defineTable({
-        userId: v.id('users'),
+    articles: defineTable({
         title: v.string(),
         slug: v.string(),
         content: v.string(),
-        shouldDelete: v.optional(v.boolean())
+        userId: v.id('users'),
+        shouldDelete: v.optional(v.boolean()),
+        isPublished: v.optional(v.boolean())
     })
         .index('by_userId', ['userId'])
         .index('by_slug', ['slug'])
+        .index('by_published', ['isPublished'])
         .index('by_shouldDelete', ['shouldDelete']),
     videos: defineTable({
         userId: v.id('users'),

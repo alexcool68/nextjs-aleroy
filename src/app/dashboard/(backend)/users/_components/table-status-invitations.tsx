@@ -44,26 +44,6 @@ function TableStatusInvitations({ showElements }: TableStatusInvitationsProps) {
                 Invitations status (latest {MAX_ELEMENTS})
             </h3>
 
-            {/* <ToggleGroup
-                type="single"
-                defaultValue="accepted"
-                onValueChange={(e: InvitationStatus) => setQuery(e)}
-                size={'sm'}
-                value={query}
-                variant={'outline'}
-                className=""
-            >
-                <ToggleGroupItem value="accepted" aria-label="Toggle accepted">
-                    Accepted
-                </ToggleGroupItem>
-                <ToggleGroupItem value="pending" aria-label="Toggle pending">
-                    Pending
-                </ToggleGroupItem>
-                <ToggleGroupItem value="revoked" aria-label="Toggle revoked">
-                    Revoked
-                </ToggleGroupItem>
-            </ToggleGroup> */}
-
             <div className="px-2 py-1">
                 <div className="flex items-center justify-center gap-2 cursor-pointer">
                     <Badge variant={query === 'accepted' ? 'default' : 'secondary'} onClick={() => setQuery('accepted')}>

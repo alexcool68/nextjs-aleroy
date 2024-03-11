@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { Loader2, UserPlus } from 'lucide-react';
+
 import { createInvitation } from '@/server/clerck-backend';
-import { z } from 'zod';
+
+import { useToast } from '@/components/ui/use-toast';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+import { Loader2, UserPlus } from 'lucide-react';
+
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { DialogHeader, DialogTrigger, DialogContent, DialogTitle, Dialog } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
 
 const formSchema = z.object({
     email: z.string().min(1, { message: 'This field has to be filled.' }).email('This is not a valid email.')
@@ -39,8 +44,8 @@ function ButtonInviteUser({}: ButtonInviteUserProps) {
                 title: 'User invited',
                 description: 'An email was sent to the user'
             });
-        } catch (err) {
-            console.log(err);
+        } catch (error) {
+            console.log(error);
             toast({
                 variant: 'destructive',
                 title: 'Something went wrong',
