@@ -21,6 +21,24 @@ export function Header() {
                 </Link>
 
                 <div className="flex items-center gap-5">
+                    <Link
+                        href="/articles/test"
+                        className={cn(
+                            'text-secondary-foreground border-b-2 px-1 py-2',
+                            pathname.startsWith('/articles/test') ? 'border-primary' : 'border-secondary'
+                        )}
+                    >
+                        test
+                    </Link>
+                    <Link
+                        href="/articles/not-test"
+                        className={cn(
+                            'text-secondary-foreground border-b-2 px-1 py-2',
+                            pathname.startsWith('/articles/not-test') ? 'border-primary' : 'border-secondary'
+                        )}
+                    >
+                        not-an-arti
+                    </Link>
                     <SignedIn>
                         <Link
                             href="/"
