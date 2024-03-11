@@ -37,7 +37,12 @@ http.route({
                         name: `${result.data.first_name ?? ''} ${result.data.last_name ?? ''}`,
                         email: result.data.email_addresses[0].email_address ?? '',
                         image: result.data.image_url,
-                        role: result.data.public_metadata.role === 'admin' ? 'admin' : 'member'
+                        role:
+                            result.data.public_metadata.role === 'superadmin'
+                                ? 'superadmin'
+                                : result.data.public_metadata.role === 'admin'
+                                  ? 'admin'
+                                  : 'member'
                     });
                     break;
                 case 'user.deleted':

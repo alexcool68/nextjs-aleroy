@@ -9,7 +9,7 @@ import { MAIN_MENU } from '../_data/menu';
 import SideNavItem from './side-nav-item';
 
 interface SideNavProps extends React.HTMLAttributes<HTMLDivElement> {
-    userRole?: string;
+    userRole: string | null;
 }
 
 export function SideNav({ className, userRole }: SideNavProps) {
@@ -18,14 +18,18 @@ export function SideNav({ className, userRole }: SideNavProps) {
         <>
             <div className={cn('pb-12', className)}>
                 <div className="space-y-4 py-4">
-                    {MAIN_MENU.map((item) => (
-                        <div className="px-3 py-2" key={item.label}>
-                            <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">{item.title}</h2>
-                            <div className="space-y-1">
-                                {item.menu.map((item) => (
-                                    <SideNavItem data={item} key={item.label} />
-                                ))}
-                            </div>
+                    {MAIN_MENU.map((item, _idx) => (
+                        <div key={_idx}>
+                            {item.role.includes(userRole !== null ? userRole : '') ? (
+                                <div className="px-3 py-2" key={item.label}>
+                                    <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">{item.title}</h2>
+                                    <div className="space-y-1">
+                                        {item.menu.map((item) => (
+                                            <SideNavItem data={item} key={item.label} />
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : null}
                         </div>
                     ))}
 

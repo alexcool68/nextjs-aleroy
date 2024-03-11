@@ -13,6 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import TitleHeader from '../../_components/title-header';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import CrownInfo from './_components/crown-info';
 
 const SAFE_EMAIL = ['alexis.leroy.it@gmail.com', 'leroy.clement68@gmail.com'];
 
@@ -80,6 +82,8 @@ export default function UsersDashboard() {
             </div>
 
             <h2 className="text-xl font-medium tracking-wide my-5">Users from Clerk</h2>
+            <CrownInfo />
+
             {userList.length === 0 && <NoDataFound />}
 
             {userList.map((user) => (
@@ -90,17 +94,26 @@ export default function UsersDashboard() {
                             <AvatarFallback>{user.emailAddresses[0].emailAddress.slice(0, 2)}</AvatarFallback>
                         </Avatar>
 
-                        <Crown
-                            className={cn(
-                                'size-4',
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <Crown
+                                        className={cn(
+                                            'size-4',
 
-                                (user.publicMetadata.role as string) === 'admin'
-                                    ? 'text-primary'
-                                    : (user.publicMetadata.role as string) === 'member'
-                                      ? 'text-muted-foreground'
-                                      : 'text-muted'
-                            )}
-                        />
+                                            (user.publicMetadata.role as string) === 'superadmin'
+                                                ? 'text-primary'
+                                                : (user.publicMetadata.role as string) === 'admin'
+                                                  ? 'text-muted-foreground'
+                                                  : 'text-muted'
+                                        )}
+                                    />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{user.publicMetadata.role as string}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
 
                         <div className="flex flex-col lg:flex-row lg:gap-5 items-start justify-center">
                             <div>{user.emailAddresses[0].emailAddress}</div>
@@ -109,10 +122,11 @@ export default function UsersDashboard() {
                     </div>
                     <div className="hidden sm:flex space-x-2 items-center">
                         <Select onValueChange={(e) => changeRole(user.id, e)} value={user.publicMetadata.role as string}>
-                            <SelectTrigger className="w-[180px]">
+                            <SelectTrigger className="w-[140px]">
                                 <SelectValue placeholder="Role" />
                             </SelectTrigger>
                             <SelectContent>
+                                <SelectItem value="superadmin">Super admin</SelectItem>
                                 <SelectItem value="admin">Admin</SelectItem>
                                 <SelectItem value="member">Member</SelectItem>
                             </SelectContent>

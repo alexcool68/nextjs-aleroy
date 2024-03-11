@@ -3,6 +3,7 @@ import { Newspaper, Bitcoin, Users, Key } from 'lucide-react';
 export interface MenuInterface {
     label: string;
     title: string;
+    role: string[];
     menu: MenuItemInterface[];
 }
 
@@ -17,6 +18,7 @@ export const MAIN_MENU: MenuInterface[] = [
     {
         label: 'dashboard',
         title: 'Dashboard',
+        role: ['superadmin', 'admin'],
         menu: [
             {
                 label: 'articles',
@@ -35,6 +37,7 @@ export const MAIN_MENU: MenuInterface[] = [
     {
         label: 'backend',
         title: 'Backend',
+        role: ['superadmin'],
         menu: [
             {
                 label: 'users',
@@ -47,6 +50,7 @@ export const MAIN_MENU: MenuInterface[] = [
     {
         label: 'tools',
         title: 'Tools',
+        role: ['superadmin', 'admin', 'member'],
         menu: [
             {
                 label: 'debrid',

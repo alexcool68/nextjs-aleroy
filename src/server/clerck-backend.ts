@@ -52,7 +52,7 @@ async function getUserList() {
 }
 
 async function deleteUser(userId: string) {
-    if (!checkRole('admin')) {
+    if (!checkRole('superadmin')) {
         return { message: 'Not Authorized' };
     }
 
@@ -66,7 +66,7 @@ async function deleteUser(userId: string) {
 }
 
 async function setRole(id: string, role: string) {
-    if (!checkRole('admin')) {
+    if (!checkRole('superadmin')) {
         return { message: 'Not Authorized' };
     }
 
