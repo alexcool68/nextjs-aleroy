@@ -1,6 +1,7 @@
-import { mutation, query } from './_generated/server';
+import { ConvexError, v } from 'convex/values';
 import { getUser } from './users';
-import { v } from 'convex/values';
+import { Doc } from './_generated/dataModel';
+import { mutation, query } from './_generated/server';
 
 export const createArticle = mutation({
     args: {
@@ -99,3 +100,63 @@ export const restoreArticle = mutation({
         });
     }
 });
+
+export const deleteArticle = mutation({
+    args: {
+        articleId: v.id('articles')
+    },
+    async handler(ctx, args) {
+        const identity = await ctx.auth.getUserIdentity();
+
+        if (!identity) {
+            return null;
+        }
+
+        const user = await getUser(ctx, identity.tokenIdentifier);
+
+        if (!user) {
+            return null;
+        }
+
+        const article = await ctx.db.get(args.articleId);
+
+        if (!article) {
+            return null;
+        }
+
+        assertCanDeleteArticle(user, article);
+
+        await ctx.db.patch(args.articleId, {
+            shouldDelete: true
+        });
+    }
+});
+
+export const toggleIsPublished = mutation({
+    args: {
+        articleId: v.id('articles')
+    },
+    handler: async (ctx, args) => {
+        const article = await ctx.db.get(args.articleId);
+
+        if (!article) {
+            return null;
+        }
+
+        await ctx.db.patch(args.articleId, {
+            isPublished: !article.isPublished
+        });
+    }
+});
+
+function assertCanDeleteArticle(user: Doc<'users'>, article: Doc<'articles'>) {
+    const canDelete = article.userId === user._id;
+
+    if (user.role !== 'superadmin') {
+        throw new ConvexError('you have not the correct role');
+    }
+
+    if (!canDelete) {
+        throw new ConvexError('you are not the same author');
+    }
+}

@@ -10,9 +10,13 @@ import { Button } from '@/components/ui/button';
 import { NotebookText, Plus, Trash } from 'lucide-react';
 import Link from 'next/link';
 import NoDataFound from '@/components/no-data-found';
+import { DataTable } from './_components/data-table';
+import { columns } from './_components/columns';
+import PublishedInfo from './_components/published-info';
 
 export default function ArticlesDashboard() {
     const articles = useQuery(api.articles.getArticles, { deletedOnly: false });
+
     return (
         <>
             <div className="md:p-5">
@@ -32,10 +36,11 @@ export default function ArticlesDashboard() {
                         </Button>
                     </div>
                 </TitleHeader>
+                <PublishedInfo />
 
-                {articles?.length === 0 && <NoDataFound icon={<NotebookText className="size-10 mr-5" />} text="No articles found" />}
+                {/* {articles?.length === 0 && <NoDataFound icon={<NotebookText className="size-10 mr-5" />} text="No articles found" />} */}
 
-                {articles && articles.map((article) => <p key={article._id}>{article.title}</p>)}
+                {articles && <DataTable columns={columns} data={articles} />}
             </div>
         </>
     );
