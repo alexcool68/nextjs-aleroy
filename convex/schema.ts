@@ -15,6 +15,7 @@ export default defineSchema({
     articles: defineTable({
         title: v.string(),
         slug: v.string(),
+        imgId: v.optional(v.string()),
         content: v.string(),
         userId: v.id('users'),
         shouldDelete: v.optional(v.boolean()),

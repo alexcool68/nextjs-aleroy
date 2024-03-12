@@ -15,7 +15,7 @@ import { columns } from './_components/columns';
 import PublishedInfo from './_components/published-info';
 
 export default function ArticlesDashboard() {
-    const articles = useQuery(api.articles.getArticles, { deletedOnly: false });
+    const articles = useQuery(api.articles.getArticles, { deletedOnly: false, publishedOnly: false });
 
     return (
         <>
@@ -36,6 +36,7 @@ export default function ArticlesDashboard() {
                         </Button>
                     </div>
                 </TitleHeader>
+
                 <PublishedInfo />
 
                 {/* {articles?.length === 0 && <NoDataFound icon={<NotebookText className="size-10 mr-5" />} text="No articles found" />} */}

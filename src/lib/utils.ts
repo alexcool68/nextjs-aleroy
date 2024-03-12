@@ -15,3 +15,7 @@ export function validateVideoLinkRegex(url: string) {
 export function truncateLongString(text: string, n: number, separator: string = ' ...') {
     return text.length > n ? text.slice(0, n - 1) + separator : text;
 }
+
+export function getImageUrl(imageId: string) {
+    return `${process.env.NEXT_PUBLIC_CONVEX_URL}/api/storage/${imageId}`;
+}

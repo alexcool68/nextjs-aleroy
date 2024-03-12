@@ -6,6 +6,7 @@ import { mutation, query } from './_generated/server';
 export const createArticle = mutation({
     args: {
         title: v.string(),
+        imgId: v.optional(v.string()),
         content: v.string(),
         isPublished: v.optional(v.boolean())
     },
@@ -24,6 +25,7 @@ export const createArticle = mutation({
 
         await ctx.db.insert('articles', {
             title: args.title,
+            imgId: args.imgId,
             slug: args.title,
             content: args.content,
             shouldDelete: false,
@@ -35,7 +37,8 @@ export const createArticle = mutation({
 
 export const getArticles = query({
     args: {
-        deletedOnly: v.optional(v.boolean())
+        deletedOnly: v.optional(v.boolean()),
+        publishedOnly: v.optional(v.boolean())
     },
     async handler(ctx, args) {
         let articles = await ctx.db.query('articles').collect();
@@ -44,6 +47,10 @@ export const getArticles = query({
             articles = articles.filter((article) => article.shouldDelete);
         } else {
             articles = articles.filter((article) => !article.shouldDelete);
+        }
+
+        if (args.publishedOnly) {
+            articles = articles.filter((article) => article.isPublished);
         }
 
         if (!articles) {

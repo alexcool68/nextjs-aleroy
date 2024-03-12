@@ -1,15 +1,22 @@
 'use client';
 
-import Link from 'next/link';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
 
 import { useToast } from '@/components/ui/use-toast';
+
+import { UploadButton, UploadDropzone, UploadFileResponse } from '@xixixao/uploadstuff/react';
+// import '@xixixao/uploadstuff/react/styles.css';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { ArrowLeftFromLineIcon } from 'lucide-react';
+
+import { getImageUrl } from '@/lib/utils';
 
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
@@ -29,6 +36,7 @@ const formSchema = z.object({
     content: z.string().min(25, {
         message: 'Content must be at least 25 characters.'
     }),
+    imgId: z.string().optional(),
     isPublished: z.boolean()
 });
 
@@ -36,6 +44,9 @@ export default function ArticlesAddDashboard() {
     const { toast } = useToast();
     const { push } = useRouter();
 
+    const [imageA, setImageA] = useState('');
+
+    const generateUploadUrl = useMutation(api.files.generateUploadUrl);
     const createArticle = useMutation(api.articles.createArticle);
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -43,13 +54,14 @@ export default function ArticlesAddDashboard() {
         defaultValues: {
             title: '',
             content: '',
+            imgId: '',
             isPublished: false
         }
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            createArticle({ title: values.title, content: values.content, isPublished: values.isPublished });
+            createArticle({ title: values.title, content: values.content, isPublished: values.isPublished, imgId: values.imgId });
             form.reset();
             toast({
                 variant: 'default',
@@ -82,6 +94,46 @@ export default function ArticlesAddDashboard() {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
                     <div>
+                        <h3 className="mb-4 text-lg font-medium">Image cover</h3>
+
+                        {imageA && (
+                            <div className="relative aspect-[1280/720]">
+                                <Image alt="image test a" className="object-cover" src={getImageUrl(imageA)} layout="fill" />
+                            </div>
+                        )}
+
+                        <FormField
+                            control={form.control}
+                            name="imgId"
+                            render={({ field }) => (
+                                <UploadDropzone
+                                    uploadUrl={generateUploadUrl}
+                                    multiple={false}
+                                    fileTypes={{
+                                        'image/*': ['.png', '.gif', '.jpeg', '.jpg']
+                                    }}
+                                    onUploadComplete={async (uploaded: UploadFileResponse[]) => {
+                                        setImageA((uploaded[0].response as any).storageId);
+                                        form.setValue('imgId', (uploaded[0].response as any).storageId);
+                                    }}
+                                    onUploadError={(error: unknown) => {
+                                        alert(`ERROR! ${error}`);
+                                    }}
+                                />
+                                // <UploadButton
+                                //     uploadUrl={generateUploadUrl}
+                                //     fileTypes={['image/*']}
+                                //     onUploadComplete={async (uploaded: UploadFileResponse[]) => {
+                                //         setImageA((uploaded[0].response as any).storageId);
+                                //         form.setValue('imgId', (uploaded[0].response as any).storageId);
+                                //     }}
+                                //     onUploadError={(error: unknown) => {
+                                //         alert(`ERROR! ${error}`);
+                                //     }}
+                                // />
+                            )}
+                        />
+
                         <h3 className="mb-4 text-lg font-medium">Title and content</h3>
                         <FormField
                             control={form.control}
