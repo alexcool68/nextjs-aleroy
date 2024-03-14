@@ -7,9 +7,8 @@ import { api } from '../../../../../convex/_generated/api';
 
 import TitleHeader from '../../_components/title-header';
 import { Button } from '@/components/ui/button';
-import { NotebookText, Plus, Trash } from 'lucide-react';
+import { Plus, Trash } from 'lucide-react';
 import Link from 'next/link';
-import NoDataFound from '@/components/no-data-found';
 import { DataTable } from './_components/data-table';
 import { columns } from './_components/columns';
 import PublishedInfo from './_components/published-info';

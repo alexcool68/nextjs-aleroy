@@ -26,11 +26,11 @@ export default function Home() {
 
                 {articles && articles.length === 0 && <NoDataFound />}
 
-                <div className="mt-5 flex flex-col gap-10 lg:flex-row lg:gap-16">
+                <div className="mt-5 flex flex-col gap-10 justify-center items-stretch lg:flex-row lg:justify-evenly lg:gap-16">
                     {articles &&
                         articles.map((article) => {
                             return (
-                                <div className="max-w-sm lg:max-w-xs flex flex-col gap-2 border-t border-primary justify-end pt-2" key={article._id}>
+                                <div className="lg:max-w-xs flex flex-col gap-2 border-t border-primary justify-end pt-2" key={article._id}>
                                     <p className="text-lg lg:text-3xl font-semibold">{article.title}</p>
                                     <div className="flex justify-start items-center text-xs lg:text-sm text-muted-foreground">
                                         <Calendar className="h-4 w-4 mr-2" /> posted on {format(new Date(article._creationTime), 'dd/MM/yyy')}
