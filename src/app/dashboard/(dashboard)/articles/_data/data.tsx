@@ -1,14 +1,14 @@
-import { CircleDashed, CircleDot } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 
 export const statuses = [
     {
         value: 'isPublished',
         label: 'Published',
-        icon: CircleDashed
+        icon: Eye
     },
     {
         value: 'isNotPublished',
         label: 'Not published',
-        icon: CircleDot
+        icon: EyeOff
     }
 ];

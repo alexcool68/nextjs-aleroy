@@ -2,13 +2,13 @@ import * as React from 'react';
 
 import { Column } from '@tanstack/react-table';
 
+import { Check, CheckCircle, PlusCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
-import { Check, PlusCircle } from 'lucide-react';
 
 interface DataTableFacetedFilterProps<TData, TValue> {
     column?: Column<TData, TValue>;
@@ -29,11 +29,12 @@ export function DataTableFacetedFilter<TData, TValue>({ column, title, options }
             <PopoverTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8 border-dashed">
                     <PlusCircle className="mr-2 h-4 w-4" />
+                    {/* <CheckCircle className="size-4 text-primary mr-2 lg:-mb-1" /> */}
                     {title}
                     {selectedValues?.size > 0 && (
                         <>
                             <Separator orientation="vertical" className="mx-2 h-4" />
-                            <Badge variant="secondary" className="rounded-sm px-1 font-normal lg:hidden">
+                            <Badge variant="secondary" className="rounded-sm px-2 font-normal lg:hidden">
                                 {selectedValues.size}
                             </Badge>
                             <div className="hidden space-x-1 lg:flex">
@@ -73,6 +74,7 @@ export function DataTableFacetedFilter<TData, TValue>({ column, title, options }
                                                 selectedValues.add(option.value);
                                             }
                                             const filterValues = Array.from(selectedValues);
+
                                             column?.setFilterValue(filterValues.length ? filterValues : undefined);
                                         }}
                                     >

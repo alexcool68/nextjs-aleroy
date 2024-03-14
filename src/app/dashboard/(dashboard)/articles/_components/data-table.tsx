@@ -45,7 +45,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
             columnFilters,
             columnVisibility
         },
-        enableRowSelection: true,
+        enableRowSelection: false,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
         onColumnVisibilityChange: setColumnVisibility,
