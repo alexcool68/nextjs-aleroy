@@ -11,6 +11,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
 
 interface articleCardProps extends React.HTMLAttributes<HTMLDivElement> {
     article: Doc<'articles'>;
@@ -34,8 +35,8 @@ export default function articleCard({ article, className }: articleCardProps) {
                         <Badge variant={'outline'}>backend</Badge>
                         <Badge variant={'outline'}>developpement</Badge>
                     </div>
-                    <Button variant={'default'} size={'sm'} disabled>
-                        Read
+                    <Button variant={'default'} size={'sm'} asChild>
+                        <Link href={`/articles/${article.slug}`}>Read</Link>
                     </Button>
                 </div>
             </CardContent>

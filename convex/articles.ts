@@ -3,6 +3,8 @@ import { getUser } from './users';
 import { Doc } from './_generated/dataModel';
 import { mutation, query } from './_generated/server';
 
+import urlSlug from 'url-slug';
+
 export const createArticle = mutation({
     args: {
         title: v.string(),
@@ -26,7 +28,7 @@ export const createArticle = mutation({
         await ctx.db.insert('articles', {
             title: args.title,
             imgId: args.imgId,
-            slug: args.title,
+            slug: urlSlug(args.title),
             content: args.content,
             shouldDelete: false,
             isPublished: args.isPublished ?? false,

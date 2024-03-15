@@ -79,22 +79,27 @@ export default function ArticlesAddDashboard() {
         }
     }
 
-    async function onFakeSubmit() {
-        const random = Math.floor(Math.random() * 100) + 1;
+    async function onFakeSubmit(nbr: number = 1) {
         try {
-            const json = await fetch(`https://dummyjson.com/posts/${random}`, { method: 'GET' });
-            const result = await json.json();
-
-            if (result) {
-                createArticle({ title: result.title, content: result.body, isPublished: true, imgId: 'kg229rt33nv3h7s54esx8pbq4h6n9e27' });
-                form.reset();
-                toast({
-                    variant: 'default',
-                    title: 'Article added'
-                });
-
-                push('/dashboard/articles');
+            for (let index = 0; index < nbr; index++) {
+                const random = Math.floor(Math.random() * 100) + 1;
+                const json = await fetch(`https://dummyjson.com/posts/${random}`, { method: 'GET' });
+                const result = await json.json();
+                if (result) {
+                    await createArticle({
+                        title: result.title,
+                        content: result.body,
+                        isPublished: true,
+                        imgId: 'kg229rt33nv3h7s54esx8pbq4h6n9e27'
+                    });
+                }
             }
+            toast({
+                variant: 'default',
+                title: 'Article added'
+            });
+
+            push('/dashboard/articles');
         } catch (error) {
             console.log(error);
         }
@@ -104,6 +109,12 @@ export default function ArticlesAddDashboard() {
         <div className="md:p-5">
             <TitleHeader title="Articles">
                 <div className="flex flex-row items-center justify-end gap-2">
+                    <Button variant={'destructive'} size={'sm'} onClick={() => onFakeSubmit()}>
+                        Add 1 fake article
+                    </Button>
+                    <Button variant={'destructive'} size={'sm'} onClick={() => onFakeSubmit(10)}>
+                        Add 10 fake articles
+                    </Button>
                     <Button variant={'secondary'} size={'sm'} asChild>
                         <Link href="/dashboard/articles" className="flex items-center h-8">
                             <ArrowLeftFromLineIcon className="w-4 h-4 mr-2" /> Back
@@ -111,9 +122,6 @@ export default function ArticlesAddDashboard() {
                     </Button>
                 </div>
             </TitleHeader>
-            <Button variant={'destructive'} onClick={onFakeSubmit}>
-                Add Fake
-            </Button>
 
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
