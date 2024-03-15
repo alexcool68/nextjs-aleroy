@@ -9,7 +9,7 @@ export default function DashboardLayout({
 }>) {
     const userRole = getRole();
     return (
-        <main className="container mx-auto pt-4 min-h-screen border-l border-r">
+        <main className="container mx-auto pt-4 min-h-screen">
             <div className="p-0">
                 <TopNavMobile className="mb-5" userRole={userRole} />
 
