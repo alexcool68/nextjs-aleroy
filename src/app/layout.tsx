@@ -31,7 +31,7 @@ export default function RootLayout({
                 <ConvexClientProvider>
                     <Toaster />
                     <Header />
-                    {children}
+                    <div className="mt-20">{children}</div>
                     <Footer />
                     <Analytics debug={false} />
                 </ConvexClientProvider>

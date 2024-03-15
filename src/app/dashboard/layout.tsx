@@ -9,12 +9,14 @@ export default function DashboardLayout({
 }>) {
     const userRole = getRole();
     return (
-        <main className="container mx-auto pt-4 min-h-screen">
-            <TopNavMobile className="mb-5" userRole={userRole} />
+        <main className="container mx-auto pt-4 min-h-screen border-l border-r">
+            <div className="p-0">
+                <TopNavMobile className="mb-5" userRole={userRole} />
 
-            <div className="flex flex-col lg:flex-row">
-                <SideNav className="hidden lg:flex lg:rounded-none lg:border-r" userRole={userRole} />
-                <div className="w-full mt-1">{children}</div>
+                <div className="flex flex-col lg:flex-row">
+                    <SideNav className="hidden lg:flex lg:rounded-none max-w-56" userRole={userRole} />
+                    <div className="flex-grow">{children}</div>
+                </div>
             </div>
         </main>
     );

@@ -11,7 +11,8 @@ export function Header() {
     const pathname = usePathname();
 
     return (
-        <div className="relative z-10 border-b w-full">
+        // <div className="relative z-10 border-b w-full">
+        <div className="flex-nowrap fixed top-0 z-10 flex w-full bg-background/85 backdrop-blur-sm lg:flex-wrap border-b">
             <div className="container flex h-20 items-center justify-between">
                 <Link href="/" className="inline-flex items-center gap-5">
                     <Image src={'/logo.png'} alt="alexis logo" width={64} height={64} className="relative size-8 lg:size-16" />
