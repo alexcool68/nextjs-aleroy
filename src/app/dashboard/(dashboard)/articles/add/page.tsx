@@ -109,11 +109,11 @@ export default function ArticlesAddDashboard() {
         <div className="md:p-5">
             <TitleHeader title="Articles">
                 <div className="flex flex-row items-center justify-end gap-2">
-                    <Button variant={'destructive'} size={'sm'} onClick={() => onFakeSubmit()}>
-                        Add 1 fake article
+                    <Button variant={'destructive'} size={'sm'} onClick={() => onFakeSubmit()} className="flex gap-1">
+                        01 <span className="hidden lg:block">{' fake Articles'}</span>
                     </Button>
-                    <Button variant={'destructive'} size={'sm'} onClick={() => onFakeSubmit(10)}>
-                        Add 10 fake articles
+                    <Button variant={'destructive'} size={'sm'} onClick={() => onFakeSubmit(10)} className="flex gap-1">
+                        10 <span className="hidden lg:block">{' fake Articles'}</span>
                     </Button>
                     <Button variant={'secondary'} size={'sm'} asChild>
                         <Link href="/dashboard/articles" className="flex items-center h-8">

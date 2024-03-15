@@ -1,14 +1,13 @@
 'use client';
 
-import { useQuery } from 'convex/react';
+import Loader from '@/components/loader';
 import { api } from '../../../../convex/_generated/api';
 
-import NoDataFound from '@/components/no-data-found';
 import { Button } from '@/components/ui/button';
+import { useQuery } from 'convex/react';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
 
-export default function articlePage({ params }: { params: { slug: string } }) {
+export default function Page({ params }: { params: { slug: string } }) {
     const article = useQuery(api.articles.getArticleBySlug, { slug: params.slug });
 
     if (article === null) {
