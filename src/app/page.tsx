@@ -15,18 +15,72 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
 import NoDataFound from '@/components/no-data-found';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function Home() {
-    const articles = useQuery(api.articles.getArticles, { deletedOnly: false, publishedOnly: true });
+    const articles = useQuery(api.articles.getArticles, { deletedOnly: false, publishedOnly: true, lastFiveOnly: true });
 
     return (
         <main className="container mx-auto pt-4 min-h-screen border-l border-r">
-            <div className="border rounded-lg p-8">
-                <div className="">Last articles :</div>
+            <div className="p-8">
+                {/* {articles && articles.length === 0 && <NoDataFound />} */}
 
-                {articles && articles.length === 0 && <NoDataFound />}
+                {articles && articles.length >= 1 ? (
+                    <Carousel
+                        opts={{
+                            align: 'center'
+                        }}
+                        className="w-full"
+                    >
+                        <CarouselContent>
+                            {/* {Array.from({ length: 5 }).map((_, index) => ( */}
+                            {articles &&
+                                articles.map((article, index) => (
+                                    <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                                        <div className="p-1">
+                                            <Card>
+                                                <AspectRatio ratio={16 / 9}>
+                                                    {article.imgId && (
+                                                        <Image
+                                                            src={getImageUrl(article.imgId)}
+                                                            layout="fill"
+                                                            alt="Image"
+                                                            className="rounded-t-lg object-cover"
+                                                        />
+                                                    )}
+                                                </AspectRatio>
+                                                <CardContent className="flex flex-col aspect-square items-start justify-between p-6 gap-2">
+                                                    <div>
+                                                        <div className="flex justify-start items-center text-xs lg:text-sm text-muted-foreground">
+                                                            <Calendar className="h-4 w-4 mr-2" /> posted on{' '}
+                                                            {format(new Date(article._creationTime), 'dd/MM/yyy')}
+                                                        </div>
+                                                        <span className="text-4xl font-semibold">{article.title}</span>
+                                                    </div>
+                                                    <div className="w-full flex flex-col justify-between lg:flex-row items-end lg:items-center gap-4">
+                                                        <div className="flex flex-col gap-1">
+                                                            <div className="flex flex-row gap-1">
+                                                                <Badge variant={'outline'}>backend</Badge>
+                                                                <Badge variant={'outline'}>developpement</Badge>
+                                                            </div>
+                                                        </div>
+                                                        <Button variant={'default'} size={'sm'} disabled>
+                                                            Read
+                                                        </Button>
+                                                    </div>
+                                                </CardContent>
+                                            </Card>
+                                        </div>
+                                    </CarouselItem>
+                                ))}
+                        </CarouselContent>
+                        <CarouselPrevious />
+                        <CarouselNext />
+                    </Carousel>
+                ) : null}
 
-                <div className="mt-5 flex flex-col gap-10 justify-center items-stretch lg:flex-row lg:justify-evenly lg:gap-16">
+                {/* <div className="mt-5 flex flex-col gap-10 justify-center items-stretch lg:flex-row lg:justify-evenly lg:gap-16">
                     {articles &&
                         articles.map((article) => {
                             return (
@@ -54,7 +108,7 @@ export default function Home() {
                                 </div>
                             );
                         })}
-                </div>
+                </div> */}
             </div>
         </main>
     );

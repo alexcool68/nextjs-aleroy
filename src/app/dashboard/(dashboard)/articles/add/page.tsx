@@ -7,7 +7,7 @@ import Image from 'next/image';
 
 import { useToast } from '@/components/ui/use-toast';
 
-import { UploadButton, UploadDropzone, UploadFileResponse } from '@xixixao/uploadstuff/react';
+//import { UploadButton, UploadDropzone, UploadFileResponse } from '@xixixao/uploadstuff/react';
 // import '@xixixao/uploadstuff/react/styles.css';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -44,9 +44,9 @@ export default function ArticlesAddDashboard() {
     const { toast } = useToast();
     const { push } = useRouter();
 
-    const [imageA, setImageA] = useState('');
+    // const [imageA, setImageA] = useState('');
 
-    const generateUploadUrl = useMutation(api.files.generateUploadUrl);
+    // const generateUploadUrl = useMutation(api.files.generateUploadUrl);
     const createArticle = useMutation(api.articles.createArticle);
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -79,6 +79,27 @@ export default function ArticlesAddDashboard() {
         }
     }
 
+    async function onFakeSubmit() {
+        const random = Math.floor(Math.random() * 100) + 1;
+        try {
+            const json = await fetch(`https://dummyjson.com/posts/${random}`, { method: 'GET' });
+            const result = await json.json();
+
+            if (result) {
+                createArticle({ title: result.title, content: result.body, isPublished: true, imgId: 'kg229rt33nv3h7s54esx8pbq4h6n9e27' });
+                form.reset();
+                toast({
+                    variant: 'default',
+                    title: 'Article added'
+                });
+
+                push('/dashboard/articles');
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <div className="md:p-5">
             <TitleHeader title="Articles">
@@ -90,19 +111,22 @@ export default function ArticlesAddDashboard() {
                     </Button>
                 </div>
             </TitleHeader>
+            <Button variant={'destructive'} onClick={onFakeSubmit}>
+                Add Fake
+            </Button>
 
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
-                    <div>
-                        <h3 className="mb-4 text-lg font-medium">Image cover</h3>
+                    <div className="space-y-5">
+                        {/* <h3 className="mb-4 text-lg font-medium">Image cover</h3> */}
 
-                        {imageA && (
+                        {/* {imageA && (
                             <div className="relative aspect-[1280/720]">
                                 <Image alt="image test a" className="object-cover" src={getImageUrl(imageA)} layout="fill" />
                             </div>
-                        )}
+                        )} */}
 
-                        <FormField
+                        {/* <FormField
                             control={form.control}
                             name="imgId"
                             render={({ field }) => (
@@ -120,21 +144,11 @@ export default function ArticlesAddDashboard() {
                                         alert(`ERROR! ${error}`);
                                     }}
                                 />
-                                // <UploadButton
-                                //     uploadUrl={generateUploadUrl}
-                                //     fileTypes={['image/*']}
-                                //     onUploadComplete={async (uploaded: UploadFileResponse[]) => {
-                                //         setImageA((uploaded[0].response as any).storageId);
-                                //         form.setValue('imgId', (uploaded[0].response as any).storageId);
-                                //     }}
-                                //     onUploadError={(error: unknown) => {
-                                //         alert(`ERROR! ${error}`);
-                                //     }}
-                                // />
-                            )}
-                        />
 
-                        <h3 className="mb-4 text-lg font-medium">Title and content</h3>
+                            )}
+                        /> */}
+
+                        <h3 className="mb-4 text-lg font-medium text-center">Title and content</h3>
                         <FormField
                             control={form.control}
                             name="title"
@@ -163,8 +177,9 @@ export default function ArticlesAddDashboard() {
                             )}
                         />
                     </div>
-                    <div>
-                        <h3 className="mb-4 text-lg font-medium">Options</h3>
+
+                    <div className="space-y-5">
+                        <h3 className="mb-4 text-lg font-medium text-center">Options</h3>
 
                         <FormField
                             control={form.control}
@@ -182,6 +197,11 @@ export default function ArticlesAddDashboard() {
                             )}
                         />
                     </div>
+
+                    <div className="space-y-5">
+                        <h3 className="mb-4 text-lg font-medium text-center">Categories</h3>
+                    </div>
+
                     <Button type="submit">Submit</Button>
                 </form>
             </Form>

@@ -38,10 +38,11 @@ export const createArticle = mutation({
 export const getArticles = query({
     args: {
         deletedOnly: v.optional(v.boolean()),
-        publishedOnly: v.optional(v.boolean())
+        publishedOnly: v.optional(v.boolean()),
+        lastFiveOnly: v.optional(v.boolean())
     },
     async handler(ctx, args) {
-        let articles = await ctx.db.query('articles').collect();
+        let articles = await ctx.db.query('articles').order('desc').collect();
 
         if (args.deletedOnly) {
             articles = articles.filter((article) => article.shouldDelete);
@@ -51,6 +52,10 @@ export const getArticles = query({
 
         if (args.publishedOnly) {
             articles = articles.filter((article) => article.isPublished);
+        }
+
+        if (args.lastFiveOnly) {
+            articles = articles.slice(0, 4);
         }
 
         if (!articles) {
