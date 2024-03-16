@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -13,6 +15,9 @@ import { useToast } from '@/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+
+import ReactQuill from 'react-quill';
+import '../../../quill.snow.css';
 
 import { ArrowLeftFromLineIcon } from 'lucide-react';
 
@@ -40,6 +45,8 @@ const formSchema = z.object({
     isPublished: z.boolean()
 });
 
+const QuillEditor = dynamic(() => import('react-quill'), { ssr: false });
+
 export default function ArticlesAddDashboard() {
     const { toast } = useToast();
     const { push } = useRouter();
@@ -58,6 +65,39 @@ export default function ArticlesAddDashboard() {
             isPublished: false
         }
     });
+
+    const quillModules = {
+        toolbar: [
+            [{ header: [1, 2, 3, false] }],
+            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            ['link', 'image'],
+            [{ align: [] }],
+            [{ color: [] }],
+            ['code-block'],
+            ['clean']
+        ]
+    };
+
+    const quillFormats = [
+        'header',
+        'bold',
+        'italic',
+        'underline',
+        'strike',
+        'blockquote',
+        'list',
+        'bullet',
+        'link',
+        'image',
+        'align',
+        'color',
+        'code-block'
+    ];
+    const editorContent = form.watch('content');
+    const onEditorStateChange = (editorState: any) => {
+        form.setValue('content', editorState);
+    };
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         try {
@@ -175,6 +215,27 @@ export default function ArticlesAddDashboard() {
                             control={form.control}
                             name="content"
                             render={({ field }) => (
+                                <QuillEditor
+                                    theme="snow"
+                                    value={editorContent}
+                                    onChange={onEditorStateChange}
+                                    className="py-0 my-10 bg-background border rounded-lg"
+                                    modules={quillModules}
+                                    formats={quillFormats}
+                                />
+                                // <FormItem>
+                                //     <FormLabel className="text-base">Content</FormLabel>
+                                //     <FormControl>
+                                //         <Textarea className="resize-y" {...field} />
+                                //     </FormControl>
+                                //     <FormMessage />
+                                // </FormItem>
+                            )}
+                        />
+                        {/* <FormField
+                            control={form.control}
+                            name="content"
+                            render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-base">Content</FormLabel>
                                     <FormControl>
@@ -183,7 +244,7 @@ export default function ArticlesAddDashboard() {
                                     <FormMessage />
                                 </FormItem>
                             )}
-                        />
+                        /> */}
                     </div>
 
                     <div className="space-y-5">

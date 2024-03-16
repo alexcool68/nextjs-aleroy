@@ -1,6 +1,13 @@
+import { Metadata } from 'next';
+
 import { getRole } from '@/lib/roles';
 import { SideNav } from './_components/side-nav';
 import { TopNavMobile } from './_components/top-nav-mobile';
+
+export const metadata: Metadata = {
+    title: 'Alexis LEROY - Dashboard',
+    description: 'Blog, CV, Projets - Alexis LEROY'
+};
 
 export default function DashboardLayout({
     children
