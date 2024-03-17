@@ -1,11 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-
 import { useRouter } from 'next/navigation';
-import dynamic from 'next/dynamic';
+
 import Link from 'next/link';
-import Image from 'next/image';
 
 import { useToast } from '@/components/ui/use-toast';
 
@@ -16,23 +13,23 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import ReactQuill from 'react-quill';
-import '../../../quill.snow.css';
-
 import { ArrowLeftFromLineIcon } from 'lucide-react';
 
 import { getImageUrl } from '@/lib/utils';
 
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
+
+import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { Input } from '@/components/ui/input';
 
 import { useMutation } from 'convex/react';
 import { api } from '../../../../../../convex/_generated/api';
 
 import TitleHeader from '@/app/dashboard/_components/title-header';
+
+import TipTapEditor from '../_components/tip-tap-editor';
 
 const formSchema = z.object({
     title: z.string().min(2, {
@@ -44,8 +41,6 @@ const formSchema = z.object({
     imgId: z.string().optional(),
     isPublished: z.boolean()
 });
-
-const QuillEditor = dynamic(() => import('react-quill'), { ssr: false });
 
 export default function ArticlesAddDashboard() {
     const { toast } = useToast();
@@ -65,39 +60,6 @@ export default function ArticlesAddDashboard() {
             isPublished: false
         }
     });
-
-    const quillModules = {
-        toolbar: [
-            [{ header: [1, 2, 3, false] }],
-            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [{ list: 'ordered' }, { list: 'bullet' }],
-            ['link', 'image'],
-            [{ align: [] }],
-            [{ color: [] }],
-            ['code-block'],
-            ['clean']
-        ]
-    };
-
-    const quillFormats = [
-        'header',
-        'bold',
-        'italic',
-        'underline',
-        'strike',
-        'blockquote',
-        'list',
-        'bullet',
-        'link',
-        'image',
-        'align',
-        'color',
-        'code-block'
-    ];
-    const editorContent = form.watch('content');
-    const onEditorStateChange = (editorState: any) => {
-        form.setValue('content', editorState);
-    };
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         try {
@@ -146,7 +108,7 @@ export default function ArticlesAddDashboard() {
     }
 
     return (
-        <div className="md:p-5">
+        <div className="p-5">
             <TitleHeader title="Articles">
                 <div className="flex flex-row items-center justify-end gap-2">
                     <Button variant={'destructive'} size={'sm'} onClick={() => onFakeSubmit()} className="flex gap-1">
@@ -197,6 +159,7 @@ export default function ArticlesAddDashboard() {
                         /> */}
 
                         <h3 className="mb-4 text-lg font-medium text-center">Title and content</h3>
+
                         <FormField
                             control={form.control}
                             name="title"
@@ -215,36 +178,15 @@ export default function ArticlesAddDashboard() {
                             control={form.control}
                             name="content"
                             render={({ field }) => (
-                                <QuillEditor
-                                    theme="snow"
-                                    value={editorContent}
-                                    onChange={onEditorStateChange}
-                                    className="py-0 my-10 bg-background border rounded-lg"
-                                    modules={quillModules}
-                                    formats={quillFormats}
-                                />
-                                // <FormItem>
-                                //     <FormLabel className="text-base">Content</FormLabel>
-                                //     <FormControl>
-                                //         <Textarea className="resize-y" {...field} />
-                                //     </FormControl>
-                                //     <FormMessage />
-                                // </FormItem>
-                            )}
-                        />
-                        {/* <FormField
-                            control={form.control}
-                            name="content"
-                            render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-base">Content</FormLabel>
                                     <FormControl>
-                                        <Textarea className="resize-y" {...field} />
+                                        <TipTapEditor description={field.name} onChange={field.onChange} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
-                        /> */}
+                        />
                     </div>
 
                     <div className="space-y-5">
@@ -274,6 +216,10 @@ export default function ArticlesAddDashboard() {
                     <Button type="submit">Submit</Button>
                 </form>
             </Form>
+            <Separator className="my-5" />
+            <div>
+                <div className="article article-invert max-w-none" dangerouslySetInnerHTML={{ __html: form.getValues('content') }} />
+            </div>
         </div>
     );
 }
