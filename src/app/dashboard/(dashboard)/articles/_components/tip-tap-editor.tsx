@@ -30,24 +30,24 @@ export const Toolbar = ({ editor }: ToolbarProps) => {
         return null;
     }
 
-    const setLink = useCallback(() => {
-        const previousUrl = editor.getAttributes('link').href;
-        const url = window.prompt('URL', previousUrl);
+    // const setLink = useCallback(() => {
+    //     const previousUrl = editor.getAttributes('link').href;
+    //     const url = window.prompt('URL', previousUrl);
 
-        // cancelled
-        if (url === null) {
-            return;
-        }
+    //     // cancelled
+    //     if (url === null) {
+    //         return;
+    //     }
 
-        // empty
-        if (url === '') {
-            editor.chain().focus().extendMarkRange('link').unsetLink().run();
-            return;
-        }
+    //     // empty
+    //     if (url === '') {
+    //         editor.chain().focus().extendMarkRange('link').unsetLink().run();
+    //         return;
+    //     }
 
-        // update link
-        editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
-    }, [editor]);
+    //     // update link
+    //     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+    // }, [editor]);
 
     return (
         <div className="flex h-12 border border-input bg-transparent rounded-lg px-1 py-1 space-x-3">
@@ -64,6 +64,7 @@ export const Toolbar = ({ editor }: ToolbarProps) => {
             <Toggle size={'sm'} pressed={editor.isActive('underline')} onPressedChange={() => editor.chain().focus().toggleUnderline().run()}>
                 <UnderlineIcon className="h-4 w-4" />
             </Toggle>
+            {/*
             <Separator orientation="vertical" />
             <Toggle size={'sm'} pressed={editor.isActive('link')} onPressedChange={setLink}>
                 <LinkIcon className="h-4 w-4" />
@@ -76,6 +77,7 @@ export const Toolbar = ({ editor }: ToolbarProps) => {
             >
                 <Link2Off className="h-4 w-4" />
             </Toggle>
+            */}
             <Separator orientation="vertical" />
             <Toggle size={'sm'} pressed={editor.isActive('orderedList')} onPressedChange={() => editor.chain().focus().toggleOrderedList().run()}>
                 <ListOrderedIcon className="h-4 w-4" />
