@@ -15,6 +15,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as articles from "../articles.js";
+import type * as categories from "../categories.js";
 import type * as clerk from "../clerk.js";
 import type * as crons from "../crons.js";
 import type * as files from "../files.js";
@@ -33,6 +34,7 @@ import type * as videos from "../videos.js";
  */
 declare const fullApi: ApiFromModules<{
   articles: typeof articles;
+  categories: typeof categories;
   clerk: typeof clerk;
   crons: typeof crons;
   files: typeof files;

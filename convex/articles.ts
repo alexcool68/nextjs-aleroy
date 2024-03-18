@@ -12,6 +12,7 @@ export const createArticle = mutation({
         title: v.string(),
         imgId: v.optional(v.string()),
         content: v.string(),
+        categories: v.optional(v.array(v.id('categories'))),
         isPublished: v.optional(v.boolean())
     },
     async handler(ctx, args) {
@@ -27,7 +28,7 @@ export const createArticle = mutation({
             return null;
         }
 
-        await ctx.db.insert('articles', {
+        const articleId = await ctx.db.insert('articles', {
             title: args.title,
             imgId: args.imgId,
             slug: urlSlug(v4() + args.title),
@@ -36,6 +37,11 @@ export const createArticle = mutation({
             isPublished: args.isPublished ?? false,
             userId: user._id
         });
+        if (args.categories) {
+            await ctx.db.patch(articleId, {
+                categories: args.categories
+            });
+        }
     }
 });
 

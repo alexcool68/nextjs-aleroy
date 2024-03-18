@@ -17,6 +17,7 @@ export default defineSchema({
         slug: v.string(),
         imgId: v.optional(v.string()),
         content: v.string(),
+        categories: v.optional(v.array(v.id('categories'))),
         userId: v.id('users'),
         shouldDelete: v.optional(v.boolean()),
         isPublished: v.optional(v.boolean())
@@ -24,6 +25,14 @@ export default defineSchema({
         .index('by_userId', ['userId'])
         .index('by_slug', ['slug'])
         .index('by_published', ['isPublished'])
+        .index('by_shouldDelete', ['shouldDelete']),
+    categories: defineTable({
+        title: v.string(),
+        slug: v.string(),
+        shouldDelete: v.optional(v.boolean()),
+        userId: v.id('users')
+    })
+        .index('by_slug', ['slug'])
         .index('by_shouldDelete', ['shouldDelete']),
     videos: defineTable({
         userId: v.id('users'),

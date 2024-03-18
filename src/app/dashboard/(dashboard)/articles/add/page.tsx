@@ -14,22 +14,22 @@ import { z } from 'zod';
 
 import { ArrowLeftFromLineIcon, X } from 'lucide-react';
 
+import { useMutation, useQuery } from 'convex/react';
+import { api } from '../../../../../../convex/_generated/api';
+
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 import { Separator } from '@/components/ui/separator';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 
-import { useMutation } from 'convex/react';
-import { api } from '../../../../../../convex/_generated/api';
-
 import TitleHeader from '@/app/dashboard/_components/title-header';
-
 import TipTapEditor from '../../../_components/tip-tap-editor';
 import CustomDragDrop from '@/app/dashboard/_components/custom-drag-drop';
 import Loader from '@/components/loader';
-import { Progress } from '@/components/ui/progress';
 
 const formSchema = z.object({
     title: z.string().min(2, {
@@ -39,6 +39,7 @@ const formSchema = z.object({
         message: 'Content must be at least 25 characters.'
     }),
     imgId: z.string().optional(),
+    categories: z.array(z.any()),
     isPublished: z.boolean()
 });
 
@@ -55,6 +56,7 @@ export default function ArticlesAddDashboard() {
 
     const generateUploadUrl = useMutation(api.files.generateUploadUrl);
     const createArticle = useMutation(api.articles.createArticle);
+    const categories = useQuery(api.categories.getCategories, {});
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -62,6 +64,7 @@ export default function ArticlesAddDashboard() {
             title: '',
             content: '',
             imgId: '',
+            categories: [],
             isPublished: false
         }
     });
@@ -113,7 +116,13 @@ export default function ArticlesAddDashboard() {
                 storageId = await uploadToServer();
             }
 
-            createArticle({ title: values.title, content: values.content, isPublished: values.isPublished, imgId: storageId });
+            createArticle({
+                title: values.title,
+                content: values.content,
+                isPublished: values.isPublished,
+                imgId: storageId,
+                categories: values.categories
+            });
 
             form.reset();
 
@@ -181,7 +190,7 @@ export default function ArticlesAddDashboard() {
     }
 
     return (
-        <div className="p-5">
+        <div className="md:p-5">
             <TitleHeader title="Articles">
                 <div className="flex flex-row items-center justify-end gap-2">
                     <Button variant={'destructive'} size={'sm'} onClick={() => onFakeSubmit()} className="flex gap-1" disabled={loading}>
@@ -293,7 +302,46 @@ export default function ArticlesAddDashboard() {
                             </div>
 
                             <div className="space-y-5">
-                                <h3 className="mb-4 text-lg font-medium text-center">Categories</h3>
+                                <FormField
+                                    control={form.control}
+                                    name="categories"
+                                    render={() => (
+                                        <FormItem>
+                                            <div className="mb-4">
+                                                <FormLabel className="text-base">Categories</FormLabel>
+                                                <FormDescription>Select the categories you want to add to the article.</FormDescription>
+                                            </div>
+                                            {categories &&
+                                                categories.map((item) => (
+                                                    <FormField
+                                                        key={item._id}
+                                                        control={form.control}
+                                                        name="categories"
+                                                        render={({ field }) => {
+                                                            return (
+                                                                <FormItem key={item._id} className="flex flex-row items-start space-x-3 space-y-0">
+                                                                    <FormControl>
+                                                                        <Checkbox
+                                                                            checked={field.value?.includes(item._id)}
+                                                                            onCheckedChange={(checked) => {
+                                                                                return checked
+                                                                                    ? field.onChange([...field.value, item._id])
+                                                                                    : field.onChange(
+                                                                                          field.value?.filter((value) => value !== item._id)
+                                                                                      );
+                                                                            }}
+                                                                        />
+                                                                    </FormControl>
+                                                                    <FormLabel className="font-normal">{item.title}</FormLabel>
+                                                                </FormItem>
+                                                            );
+                                                        }}
+                                                    />
+                                                ))}
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                             </div>
 
                             <Button type="submit">Submit</Button>

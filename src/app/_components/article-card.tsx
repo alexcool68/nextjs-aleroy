@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 
 import { Doc } from '../../../convex/_generated/dataModel';
+import { api } from '../../../convex/_generated/api';
+import { useQuery } from 'convex/react';
 
 import { Calendar } from 'lucide-react';
 
@@ -25,7 +27,6 @@ export default function articleCard({ article, className }: articleCardProps) {
             )}
 
             <CardContent className="flex flex-col aspect-square items-start justify-between px-6 py-2">
-                {/* <CardContent className="flex flex-col aspect-square items-start justify-between px-6 py-2"> */}
                 <div>
                     <div className="flex justify-start items-center text-xs lg:text-sm text-muted-foreground mb-0.5">
                         <Calendar className="h-4 w-4 mr-2" /> posted on {format(new Date(article._creationTime), 'dd/MM/yyy')}
@@ -34,8 +35,12 @@ export default function articleCard({ article, className }: articleCardProps) {
                 </div>
                 <div className="w-full flex flex-col justify-between lg:flex-row items-end lg:items-center gap-4">
                     <div className="flex flex-col sm:flex-row gap-1">
-                        <Badge variant={'outline'}>backend</Badge>
-                        <Badge variant={'outline'}>developpement</Badge>
+                        {article.categories &&
+                            article.categories.map((category) => (
+                                <Badge variant={'outline'} key={category}>
+                                    {useQuery(api.categories.getCategoryTitleById, { id: category })}
+                                </Badge>
+                            ))}
                     </div>
                     <Button variant={'default'} size={'sm'} asChild>
                         <Link href={`/articles/${article.slug}`}>Read</Link>

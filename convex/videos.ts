@@ -98,6 +98,7 @@ export const getVideos = query({
         if (!user) {
             return null;
         }
+
         let videos = await ctx.db
             .query('videos')
             .withIndex('by_userId', (q) => q.eq('userId', user._id))

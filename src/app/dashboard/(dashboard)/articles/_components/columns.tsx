@@ -5,6 +5,8 @@ import { format } from 'date-fns';
 import { ColumnDef } from '@tanstack/react-table';
 
 import { Doc } from '../../../../../../convex/_generated/dataModel';
+import { api } from '../../../../../../convex/_generated/api';
+import { useQuery } from 'convex/react';
 
 import { cn } from '@/lib/utils';
 
@@ -13,7 +15,20 @@ import { CheckCircle } from 'lucide-react';
 import { DataTableRowActions } from './data-table-row-actions';
 import { DataTableColumnHeader } from './data-table-colum-header';
 
+import { Badge } from '@/components/ui/badge';
+
 export const columns: ColumnDef<Doc<'articles'>>[] = [
+    {
+        accessorKey: 'isPublished',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="" />,
+        cell: ({ row }) => (
+            <div>
+                <CheckCircle className={cn('w-4 h-4', row.original.isPublished ? 'text-primary' : 'text-muted')} />
+            </div>
+        ),
+        enableHiding: false,
+        enableSorting: true
+    },
     {
         accessorKey: 'title',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Title" />,
@@ -28,6 +43,20 @@ export const columns: ColumnDef<Doc<'articles'>>[] = [
         enableSorting: false
     },
     {
+        accessorKey: 'category',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Categories" />,
+        cell: ({ row }) => {
+            const categories = row.original.categories ?? [];
+            return categories.map((category) => (
+                <Badge variant={'outline'} key={category}>
+                    {useQuery(api.categories.getCategoryTitleById, { id: category })}
+                </Badge>
+            ));
+        },
+        enableHiding: true,
+        enableSorting: false
+    },
+    {
         id: '_creationTime',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Created at" />,
         cell: ({ row }) => {
@@ -36,17 +65,7 @@ export const columns: ColumnDef<Doc<'articles'>>[] = [
         enableHiding: true,
         enableSorting: false
     },
-    {
-        accessorKey: 'isPublished',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="" />,
-        cell: ({ row }) => (
-            <div>
-                <CheckCircle className={cn('w-4 h-4', row.original.isPublished ? 'text-primary' : 'text-muted')} />
-            </div>
-        ),
-        enableHiding: false,
-        enableSorting: true
-    },
+
     {
         id: 'actions',
         cell: ({ row }) => {
