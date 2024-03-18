@@ -1,18 +1,21 @@
 'use client';
 
 import Link from 'next/link';
-import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
-import { Button } from '@/components/ui/button';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 
-export function Header() {
+import { cn } from '@/lib/utils';
+
+import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+
+import { Button } from '@/components/ui/button';
+
+interface headerProps extends React.HTMLAttributes<HTMLDivElement> {}
+export function Header({ className }: headerProps) {
     const pathname = usePathname();
 
     return (
-        // <div className="relative z-10 border-b w-full">
-        <div className="flex-nowrap fixed top-0 z-10 flex w-full bg-background/85 backdrop-blur-sm lg:flex-wrap border-b">
+        <div className={cn('flex-nowrap fixed top-0 z-10 flex w-full bg-background/85 backdrop-blur-sm lg:flex-wrap border-b', className)}>
             <div className="container flex h-20 items-center justify-between">
                 <Link href="/" className="inline-flex items-center gap-5">
                     <Image src={'/logo.png'} alt="alexis logo" width={64} height={64} className="relative size-8 lg:size-16" />

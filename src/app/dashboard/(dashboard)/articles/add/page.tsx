@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import Link from 'next/link';
@@ -12,10 +12,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { ArrowLeftFromLineIcon, X } from 'lucide-react';
-
 import { useMutation, useQuery } from 'convex/react';
-import { api } from '../../../../../../convex/_generated/api';
+import { api } from '@/convex/_generated/api';
+
+import { ArrowLeftFromLineIcon, X } from 'lucide-react';
 
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
@@ -26,10 +26,10 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 
-import TitleHeader from '@/app/dashboard/_components/title-header';
-import TipTapEditor from '../../../_components/tip-tap-editor';
-import CustomDragDrop from '@/app/dashboard/_components/custom-drag-drop';
 import Loader from '@/components/loader';
+import CustomDragDrop from '@/app/dashboard/_components/custom-drag-drop';
+import TipTapEditor from '@/app/dashboard/_components/tip-tap-editor';
+import TitleHeader from '@/app/dashboard/_components/title-header';
 
 const formSchema = z.object({
     title: z.string().min(2, {

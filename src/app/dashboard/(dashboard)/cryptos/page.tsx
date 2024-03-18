@@ -1,5 +1,6 @@
 import React from 'react';
-import TitleHeader from '../../_components/title-header';
+
+import TitleHeader from '@/app/dashboard/_components/title-header';
 
 export default function CryptosDashboard() {
     return (

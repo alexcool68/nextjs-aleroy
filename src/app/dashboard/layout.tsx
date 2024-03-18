@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 
 import { getRole } from '@/lib/roles';
+
 import { SideNav } from './_components/sidenav/side-nav';
 import { TopNavMobile } from './_components/top-nav-mobile';
 

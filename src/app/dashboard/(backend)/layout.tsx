@@ -1,6 +1,7 @@
+import React from 'react';
+
 import { AuthRequiredError } from '@/lib/exceptions';
 import { checkRole } from '@/lib/roles';
-import React from 'react';
 
 function backendDashboardLayout({
     children

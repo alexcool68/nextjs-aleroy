@@ -3,10 +3,10 @@
 import React from 'react';
 
 import { EditorContent, useEditor } from '@tiptap/react';
+
 import { type Editor } from '@tiptap/react';
 
 import StarterKit from '@tiptap/starter-kit';
-
 import Heading from '@tiptap/extension-heading';
 import Bold from '@tiptap/extension-bold';
 import Paragraph from '@tiptap/extension-paragraph';
@@ -16,41 +16,23 @@ import Link from '@tiptap/extension-link';
 import BulletList from '@tiptap/extension-bullet-list';
 import OrderedList from '@tiptap/extension-ordered-list';
 
-import { BoldIcon, Code2, Heading1Icon, ItalicIcon, Link2Off, LinkIcon, ListIcon, ListOrderedIcon, QuoteIcon, UnderlineIcon } from 'lucide-react';
+import { BoldIcon, Code2, Heading1Icon, ItalicIcon, ListIcon, ListOrderedIcon, QuoteIcon, UnderlineIcon } from 'lucide-react';
 
 import { Toggle } from '@/components/ui/toggle';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
 
-interface ToolbarProps {
+interface toolbarProps extends React.HTMLAttributes<HTMLDivElement> {
     editor: Editor | null;
 }
 
-const Toolbar = ({ editor }: ToolbarProps) => {
+const Toolbar = ({ editor, className }: toolbarProps) => {
     if (!editor) {
         return null;
     }
 
-    // const setLink = useCallback(() => {
-    //     const previousUrl = editor.getAttributes('link').href;
-    //     const url = window.prompt('URL', previousUrl);
-
-    //     // cancelled
-    //     if (url === null) {
-    //         return;
-    //     }
-
-    //     // empty
-    //     if (url === '') {
-    //         editor.chain().focus().extendMarkRange('link').unsetLink().run();
-    //         return;
-    //     }
-
-    //     // update link
-    //     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
-    // }, [editor]);
-
     return (
-        <div className="flex h-12 border border-input bg-transparent rounded-lg px-1 py-1 space-x-3">
+        <div className={cn('flex h-12 border border-input bg-transparent rounded-lg px-1 py-1 space-x-3', className)}>
             <Toggle size={'sm'} pressed={editor.isActive('heading')} onPressedChange={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>
                 <Heading1Icon className="h-4 w-4" />
             </Toggle>
@@ -96,12 +78,13 @@ const Toolbar = ({ editor }: ToolbarProps) => {
     );
 };
 
-interface TipTapEditorProps {
+interface tipTapEditorProps {
     description: string;
     onChange: (richText: string) => void;
+    className?: string;
 }
 
-function TipTapEditor({ description, onChange }: TipTapEditorProps) {
+function TipTapEditor({ description, onChange, className }: tipTapEditorProps) {
     const editor = useEditor({
         extensions: [
             StarterKit.configure(),
@@ -156,41 +139,10 @@ function TipTapEditor({ description, onChange }: TipTapEditorProps) {
             onChange(editor.getHTML());
         },
         content: description
-
-        //     content: `
-        //     <h2>
-        //       Hi there,
-        //     </h2>
-        //     <p>
-        //       this is a basic <em>basic</em> example of <strong>tiptap</strong>. Sure, there are all kind of basic text styles you’d probably expect from a text editor. But wait until you see the lists:
-        //     </p>
-        //     <ul>
-        //       <li>
-        //         That’s a bullet list with one …
-        //       </li>
-        //       <li>
-        //         … or two list items.
-        //       </li>
-        //     </ul>
-        //     <p>
-        //       Isn’t that great? And all of that is editable. But wait, there’s more. Let’s try a code block:
-        //     </p>
-        //     <pre><code class="language-css">body {
-        //     display: none;
-        //   }</code></pre>
-        //     <p>
-        //       I know, I know, this is impressive. It’s only the tip of the iceberg though. Give it a try and click a little bit around. Don’t forget to check the other examples too.
-        //     </p>
-        //     <blockquote>
-        //       Wow, that’s amazing. Good work, boy! 👏
-        //       <br />
-        //       — Mom
-        //     </blockquote>
-        //   `
     });
 
     return (
-        <div className="flex flex-col justify-stretch min-h-[250px] gap-2">
+        <div className={cn('flex flex-col justify-stretch min-h-[250px] gap-2', className)}>
             <Toolbar editor={editor} />
             <EditorContent editor={editor} />
         </div>

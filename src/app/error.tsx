@@ -1,8 +1,10 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { ShieldAlert } from 'lucide-react';
 import { useEffect } from 'react';
+
+import { ShieldAlert } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
 
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
     useEffect(() => {

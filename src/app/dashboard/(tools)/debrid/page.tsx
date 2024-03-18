@@ -5,11 +5,13 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 import { useAction, useMutation, useQuery } from 'convex/react';
-import { api } from '../../../../../convex/_generated/api';
+import { api } from '@/convex/_generated/api';
+
+import { cn, truncateLongString, validateVideoLinkRegex } from '@/lib/utils';
 
 import { formatDistance } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import { filesize } from 'filesize';
+import { fr } from 'date-fns/locale';
 import validator from 'validator';
 
 import { CircleDashed, RefreshCcw, Trash } from 'lucide-react';
@@ -18,11 +20,10 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+
 import NoDataFound from '@/components/no-data-found';
 
-import { cn, truncateLongString, validateVideoLinkRegex } from '@/lib/utils';
-
-import TitleHeader from '../../_components/title-header';
+import TitleHeader from '@/app/dashboard/_components/title-header';
 
 export default function DebridDashboard() {
     const { toast } = useToast();

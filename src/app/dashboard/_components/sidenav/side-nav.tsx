@@ -2,11 +2,16 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+
 import { cn } from '@/lib/utils';
+
 import { TestTube } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
-import { MAIN_MENU } from '../../_data/menu';
+
 import SideNavItem from './side-nav-item';
+
+import { MAIN_MENU } from '../../_data/menu';
 
 interface SideNavProps extends React.HTMLAttributes<HTMLDivElement> {
     userRole: string | null;

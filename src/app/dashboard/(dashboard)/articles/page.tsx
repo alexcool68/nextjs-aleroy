@@ -5,19 +5,20 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 
 import { useMutation, useQuery } from 'convex/react';
-import { api } from '../../../../../convex/_generated/api';
+import { api } from '@/convex/_generated/api';
 
 import { Plus, Trash, X } from 'lucide-react';
-
-import TitleHeader from '../../_components/title-header';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 
+import TitleHeader from '@/app/dashboard/_components/title-header';
+
+import PublishedInfo from './_components/published-info';
+
 import { DataTable } from './_components/data-table';
 import { columns } from './_components/columns';
-import PublishedInfo from './_components/published-info';
 
 export default function ArticlesDashboard() {
     const [category, setCategory] = useState<string>('');

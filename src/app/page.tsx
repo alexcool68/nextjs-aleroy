@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from 'convex/react';
-import { api } from '../../convex/_generated/api';
+import { api } from '@/convex/_generated/api';
 
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
@@ -11,7 +11,7 @@ export default function Home() {
     const articles = useQuery(api.articles.getArticles, { deletedOnly: false, publishedOnly: true, lastFiveOnly: true });
 
     return (
-        <main className="container mx-auto pt-4 min-h-screen border-l border-r">
+        <div className="container mx-auto pt-4 min-h-screen border-l border-r">
             <div className="p-8">
                 {articles && articles.length > 0 && (
                     <Carousel opts={{ align: 'center' }}>
@@ -30,6 +30,6 @@ export default function Home() {
                     </Carousel>
                 )}
             </div>
-        </main>
+        </div>
     );
 }

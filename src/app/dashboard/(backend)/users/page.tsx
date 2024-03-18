@@ -1,19 +1,26 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
 import { User as typeUser } from '@clerk/backend';
+
 import { deleteUser, getUserList, setRole } from '@/server/clerck-backend';
+
 import { CpuIcon, Crown, Trash } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import NoDataFound from '@/components/no-data-found';
-import TableStatusInvitations from './_components/table-status-invitations';
-import ButtonInviteUser from './_components/button-invite-user';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import TitleHeader from '../../_components/title-header';
+
 import { cn } from '@/lib/utils';
-import { useToast } from '@/components/ui/use-toast';
+
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useToast } from '@/components/ui/use-toast';
+import { Button } from '@/components/ui/button';
+
+import NoDataFound from '@/components/no-data-found';
+import TitleHeader from '@/app/dashboard/_components/title-header';
+
+import ButtonInviteUser from './_components/button-invite-user';
+import TableStatusInvitations from './_components/table-status-invitations';
 import CrownInfo from './_components/crown-info';
 
 const SAFE_EMAIL = ['alexis.leroy.it@gmail.com', 'leroy.clement68@gmail.com'];

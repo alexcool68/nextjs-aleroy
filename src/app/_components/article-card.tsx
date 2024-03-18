@@ -3,9 +3,9 @@ import Link from 'next/link';
 
 import { format } from 'date-fns';
 
-import { Doc } from '../../../convex/_generated/dataModel';
-import { api } from '../../../convex/_generated/api';
 import { useQuery } from 'convex/react';
+import { Doc } from '@/convex/_generated/dataModel';
+import { api } from '@/convex/_generated/api';
 
 import { Calendar } from 'lucide-react';
 

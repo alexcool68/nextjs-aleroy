@@ -3,10 +3,12 @@
 import Link from 'next/link';
 
 import { useMutation, useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+
+import { ArrowLeftFromLineIcon, Undo2Icon } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 
-import { ArrowLeftFromLineIcon, Film, Undo2Icon } from 'lucide-react';
-import { api } from '../../../../../../convex/_generated/api';
 import TitleHeader from '@/app/dashboard/_components/title-header';
 import NoDataFound from '@/components/no-data-found';
 

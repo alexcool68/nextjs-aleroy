@@ -1,18 +1,17 @@
 import type { Metadata } from 'next';
-import { Analytics } from '@vercel/analytics/react';
 
-// import { Inter } from 'next/font/google';
-import './globals.css';
-import ConvexClientProvider from './ConvexClientProvider';
+import { Analytics } from '@vercel/analytics/react';
 
 import { fonts } from '@/lib/fonts';
 import { cn } from '@/lib/utils';
 
-import { Toaster } from '@/components/ui/toaster';
-import { Header } from '../components/navbar/header';
-import { Footer } from '../components/footer/footer';
+import ConvexClientProvider from './ConvexClientProvider';
 
-// const inter = Inter({ subsets: ['latin'] });
+import './globals.css';
+
+import { Toaster } from '@/components/ui/toaster';
+import { Header } from '@/components/navbar/header';
+import { Footer } from '@/components/footer/footer';
 
 export const metadata: Metadata = {
     title: 'Alexis LEROY',
