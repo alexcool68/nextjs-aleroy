@@ -13,7 +13,7 @@ export default function Home() {
     return (
         <main className="container mx-auto pt-4 min-h-screen border-l border-r">
             <div className="p-8">
-                {articles && articles.length >= 1 && (
+                {articles && articles.length > 0 && (
                     <Carousel opts={{ align: 'center' }}>
                         <CarouselContent>
                             {articles &&

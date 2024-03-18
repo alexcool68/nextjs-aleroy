@@ -1,21 +1,18 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 import { useToast } from '@/components/ui/use-toast';
-
-//import { UploadButton, UploadDropzone, UploadFileResponse } from '@xixixao/uploadstuff/react';
-// import '@xixixao/uploadstuff/react/styles.css';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { ArrowLeftFromLineIcon } from 'lucide-react';
-
-import { getImageUrl } from '@/lib/utils';
+import { ArrowLeftFromLineIcon, X } from 'lucide-react';
 
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
@@ -29,13 +26,16 @@ import { api } from '../../../../../../convex/_generated/api';
 
 import TitleHeader from '@/app/dashboard/_components/title-header';
 
-import TipTapEditor from '../_components/tip-tap-editor';
+import TipTapEditor from '../../../_components/tip-tap-editor';
+import CustomDragDrop from '@/app/dashboard/_components/custom-drag-drop';
+import Loader from '@/components/loader';
+import { Progress } from '@/components/ui/progress';
 
 const formSchema = z.object({
     title: z.string().min(2, {
         message: 'Title must be at least 2 characters.'
     }),
-    content: z.string().min(25, {
+    content: z.string().min(2, {
         message: 'Content must be at least 25 characters.'
     }),
     imgId: z.string().optional(),
@@ -46,9 +46,14 @@ export default function ArticlesAddDashboard() {
     const { toast } = useToast();
     const { push } = useRouter();
 
-    // const [imageA, setImageA] = useState('');
+    const [progress, setProgress] = useState<{ total: number; value: number }>({ total: 0, value: 0 });
+    const [loading, setLoading] = useState<boolean>(false);
 
-    // const generateUploadUrl = useMutation(api.files.generateUploadUrl);
+    const [file, setFile] = useState<File | null>(null);
+    const [previewURL, setPreviewURL] = useState('');
+    const [removeFile, setRemoveFile] = useState(false);
+
+    const generateUploadUrl = useMutation(api.files.generateUploadUrl);
     const createArticle = useMutation(api.articles.createArticle);
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -61,10 +66,57 @@ export default function ArticlesAddDashboard() {
         }
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    const generatePreview = (file: File) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+            setPreviewURL(reader.result as string);
+        };
+    };
+
+    const handleUpdateFile = (file: File) => {
+        const isValid = file.type === 'image/png' || file.type === 'image/jpeg';
+        if (!isValid) {
+            alert('Please upload a valid image file');
+            return;
+        }
+        generatePreview(file);
+        setFile(file);
+        setRemoveFile(false);
+    };
+
+    const handleRemoveFile = () => {
+        setFile(null);
+        setPreviewURL('');
+        setRemoveFile(true);
+    };
+
+    const uploadToServer = async () => {
+        const imgUrl = await generateUploadUrl();
+
+        const result = await fetch(imgUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': file!.type },
+            body: file
+        });
+
+        const { storageId } = await result.json();
+
+        return storageId;
+    };
+
+    async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            createArticle({ title: values.title, content: values.content, isPublished: values.isPublished, imgId: values.imgId });
+            let storageId = undefined;
+
+            if (file) {
+                storageId = await uploadToServer();
+            }
+
+            createArticle({ title: values.title, content: values.content, isPublished: values.isPublished, imgId: storageId });
+
             form.reset();
+
             toast({
                 variant: 'default',
                 title: 'Article added'
@@ -84,21 +136,42 @@ export default function ArticlesAddDashboard() {
     async function onFakeSubmit(nbr: number = 1) {
         try {
             for (let index = 0; index < nbr; index++) {
-                const random = Math.floor(Math.random() * 100) + 1;
-                const json = await fetch(`https://dummyjson.com/posts/${random}`, { method: 'GET' });
-                const result = await json.json();
-                if (result) {
-                    await createArticle({
-                        title: result.title,
-                        content: result.body,
-                        isPublished: true,
-                        imgId: 'kg229rt33nv3h7s54esx8pbq4h6n9e27'
-                    });
-                }
+                setLoading(true);
+                setProgress({ total: nbr, value: index + 1 });
+
+                // const random = Math.floor(Math.random() * 100) + 1;
+                const random = Math.floor(Math.random() * (150 - 1 + 1) + 1);
+
+                const getRandomPost = await fetch(`https://dummyjson.com/posts/${random}`, { method: 'GET' });
+                const randomPost = await getRandomPost.json();
+
+                const getBaconText = await fetch(`https://baconipsum.com/api/?type=meat-and-filler`, { method: 'GET' });
+                const baconText = await getBaconText.json();
+
+                const newImageUrl = await generateUploadUrl();
+
+                const getImageFromPicsum = await fetch(`https://picsum.photos/800/400`, { method: 'GET' });
+                const image = await getImageFromPicsum.blob();
+
+                const uploadedImageResult = await fetch(newImageUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': image!.type },
+                    body: image
+                });
+
+                const { storageId } = await uploadedImageResult.json();
+
+                await createArticle({
+                    title: randomPost.title,
+                    content: `<p>${baconText[0]}</p><p>${baconText[1]}</p><p>${baconText[2]}</p><p>${baconText[3]}</p><p>${baconText[4]}</p>`,
+                    isPublished: true,
+                    imgId: storageId
+                });
             }
+            // setLoading(false)
             toast({
                 variant: 'default',
-                title: 'Article added'
+                title: 'Articles added'
             });
 
             push('/dashboard/articles');
@@ -111,10 +184,10 @@ export default function ArticlesAddDashboard() {
         <div className="p-5">
             <TitleHeader title="Articles">
                 <div className="flex flex-row items-center justify-end gap-2">
-                    <Button variant={'destructive'} size={'sm'} onClick={() => onFakeSubmit()} className="flex gap-1">
+                    <Button variant={'destructive'} size={'sm'} onClick={() => onFakeSubmit()} className="flex gap-1" disabled={loading}>
                         01 <span className="hidden lg:block">{' fake Articles'}</span>
                     </Button>
-                    <Button variant={'destructive'} size={'sm'} onClick={() => onFakeSubmit(10)} className="flex gap-1">
+                    <Button variant={'destructive'} size={'sm'} onClick={() => onFakeSubmit(10)} className="flex gap-1" disabled={loading}>
                         10 <span className="hidden lg:block">{' fake Articles'}</span>
                     </Button>
                     <Button variant={'secondary'} size={'sm'} asChild>
@@ -124,102 +197,116 @@ export default function ArticlesAddDashboard() {
                     </Button>
                 </div>
             </TitleHeader>
+            {loading ? (
+                <>
+                    <div className="flex flex-col items-center justify-center gap-5">
+                        <p>
+                            Progress : {progress.value} / {progress.total}
+                        </p>
+                        <Progress value={Math.floor((progress.value / progress.total) * 100)} className="w-full" />
+                        <Loader />
+                    </div>
+                </>
+            ) : (
+                <>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
+                            <div className="space-y-5">
+                                <h3 className="mb-4 text-lg font-medium">Image cover</h3>
 
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
-                    <div className="space-y-5">
-                        {/* <h3 className="mb-4 text-lg font-medium">Image cover</h3> */}
+                                {!file && <CustomDragDrop updateFileUpload={handleUpdateFile} removeFile={removeFile} />}
 
-                        {/* {imageA && (
-                            <div className="relative aspect-[1280/720]">
-                                <Image alt="image test a" className="object-cover" src={getImageUrl(imageA)} layout="fill" />
-                            </div>
-                        )} */}
+                                {file && (
+                                    <div className="p-2 text-center bg-background border border-dashed rounded-lg flex items-center justify-center">
+                                        <div className="relative flex flex-col gap-2 w-full max-w-md">
+                                            {previewURL && (
+                                                <Image
+                                                    src={previewURL}
+                                                    alt={'preview image'}
+                                                    width={0}
+                                                    height={0}
+                                                    sizes="100vw"
+                                                    style={{ width: '100%', height: 'auto' }}
+                                                    className="rounded-lg aspect-[1.6]"
+                                                />
+                                            )}
 
-                        {/* <FormField
-                            control={form.control}
-                            name="imgId"
-                            render={({ field }) => (
-                                <UploadDropzone
-                                    uploadUrl={generateUploadUrl}
-                                    multiple={false}
-                                    fileTypes={{
-                                        'image/*': ['.png', '.gif', '.jpeg', '.jpg']
-                                    }}
-                                    onUploadComplete={async (uploaded: UploadFileResponse[]) => {
-                                        setImageA((uploaded[0].response as any).storageId);
-                                        form.setValue('imgId', (uploaded[0].response as any).storageId);
-                                    }}
-                                    onUploadError={(error: unknown) => {
-                                        alert(`ERROR! ${error}`);
-                                    }}
+                                            {previewURL && (
+                                                <div className="absolute top-0 left-0 flex flex-col items-center justify-center gap-2 text-primary w-full h-full bg-background/80">
+                                                    <button onClick={handleRemoveFile} type="button" className="w-5 h-5">
+                                                        <X className="icon" />
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                                <h3 className="mb-4 text-lg font-medium text-center">Title and content</h3>
+                                <FormField
+                                    control={form.control}
+                                    name="title"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="text-base">Title</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="This is a title" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
                                 />
 
-                            )}
-                        /> */}
+                                <FormField
+                                    control={form.control}
+                                    name="content"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="text-base">Content</FormLabel>
+                                            <FormControl>
+                                                <TipTapEditor description={field.name} onChange={field.onChange} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
 
-                        <h3 className="mb-4 text-lg font-medium text-center">Title and content</h3>
+                            <div className="space-y-5">
+                                <h3 className="mb-4 text-lg font-medium text-center">Options</h3>
 
-                        <FormField
-                            control={form.control}
-                            name="title"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-base">Title</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="This is a title" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                                <FormField
+                                    control={form.control}
+                                    name="isPublished"
+                                    render={({ field }) => (
+                                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                                            <div className="space-y-0.5">
+                                                <FormLabel className="text-base">Publish this article</FormLabel>
+                                                <FormDescription>If this article is published, it will appear on the website</FormDescription>
+                                            </div>
+                                            <FormControl>
+                                                <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
 
-                        <FormField
-                            control={form.control}
-                            name="content"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-base">Content</FormLabel>
-                                    <FormControl>
-                                        <TipTapEditor description={field.name} onChange={field.onChange} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                            <div className="space-y-5">
+                                <h3 className="mb-4 text-lg font-medium text-center">Categories</h3>
+                            </div>
+
+                            <Button type="submit">Submit</Button>
+                        </form>
+                    </Form>
+
+                    <Separator className="my-5" />
+
+                    <div>
+                        <div className="article article-invert max-w-none" dangerouslySetInnerHTML={{ __html: form.getValues('content') }} />
                     </div>
-
-                    <div className="space-y-5">
-                        <h3 className="mb-4 text-lg font-medium text-center">Options</h3>
-
-                        <FormField
-                            control={form.control}
-                            name="isPublished"
-                            render={({ field }) => (
-                                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                                    <div className="space-y-0.5">
-                                        <FormLabel className="text-base">Publish this article</FormLabel>
-                                        <FormDescription>If this article is published, it will appear on the website</FormDescription>
-                                    </div>
-                                    <FormControl>
-                                        <Switch checked={field.value} onCheckedChange={field.onChange} />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-
-                    <div className="space-y-5">
-                        <h3 className="mb-4 text-lg font-medium text-center">Categories</h3>
-                    </div>
-
-                    <Button type="submit">Submit</Button>
-                </form>
-            </Form>
-            <Separator className="my-5" />
-            <div>
-                <div className="article article-invert max-w-none" dangerouslySetInnerHTML={{ __html: form.getValues('content') }} />
-            </div>
+                </>
+            )}
         </div>
     );
 }

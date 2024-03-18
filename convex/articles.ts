@@ -5,6 +5,8 @@ import { mutation, query } from './_generated/server';
 
 import urlSlug from 'url-slug';
 
+import { v4 } from 'uuid';
+
 export const createArticle = mutation({
     args: {
         title: v.string(),
@@ -28,7 +30,7 @@ export const createArticle = mutation({
         await ctx.db.insert('articles', {
             title: args.title,
             imgId: args.imgId,
-            slug: urlSlug(args.title),
+            slug: urlSlug(v4() + args.title),
             content: args.content,
             shouldDelete: false,
             isPublished: args.isPublished ?? false,
@@ -57,7 +59,7 @@ export const getArticles = query({
         }
 
         if (args.lastFiveOnly) {
-            articles = articles.slice(0, 4);
+            articles = articles.slice(0, 5);
         }
 
         if (!articles) {

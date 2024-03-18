@@ -1,4 +1,6 @@
 import Image from 'next/image';
+import Link from 'next/link';
+
 import { format } from 'date-fns';
 
 import { Doc } from '../../../convex/_generated/dataModel';
@@ -8,10 +10,8 @@ import { Calendar } from 'lucide-react';
 import { cn, getImageUrl } from '@/lib/utils';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import Link from 'next/link';
 
 interface articleCardProps extends React.HTMLAttributes<HTMLDivElement> {
     article: Doc<'articles'>;
@@ -19,11 +19,13 @@ interface articleCardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export default function articleCard({ article, className }: articleCardProps) {
     return (
-        <Card className={cn('', className)}>
-            <AspectRatio ratio={16 / 9}>
-                {article.imgId && <Image src={getImageUrl(article.imgId)} layout="fill" alt="Image" className="rounded-t-lg object-cover" />}
-            </AspectRatio>
+        <Card className={cn('w-full max-w-sm', className)}>
+            {article.imgId && (
+                <Image src={getImageUrl(article.imgId)} alt={'preview image'} width={400} height={250} className="rounded-t-lg aspect-[1.6]" />
+            )}
+
             <CardContent className="flex flex-col aspect-square items-start justify-between px-6 py-2">
+                {/* <CardContent className="flex flex-col aspect-square items-start justify-between px-6 py-2"> */}
                 <div>
                     <div className="flex justify-start items-center text-xs lg:text-sm text-muted-foreground mb-0.5">
                         <Calendar className="h-4 w-4 mr-2" /> posted on {format(new Date(article._creationTime), 'dd/MM/yyy')}

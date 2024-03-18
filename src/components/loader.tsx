@@ -1,10 +1,15 @@
 import React from 'react';
-import { ClipLoader } from 'react-spinners';
 
-function Loader() {
+import { BeatLoader } from 'react-spinners';
+
+interface LoaderProps {
+    color?: string;
+    size?: number;
+}
+function Loader({ color = '#ea580c', size = 128 }: LoaderProps) {
     return (
         <div className="flex justify-center items-center py-10 my-5">
-            <ClipLoader color={'orange'} size={150} aria-label="Loading Spinner" />
+            <BeatLoader color={color} size={size} aria-label="Loading Spinner" />
         </div>
     );
 }
