@@ -15,16 +15,19 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
+export interface articleWithImgUrl extends Doc<'articles'> {
+    imgUrl?: string | null;
+}
+
 interface articleCardProps extends React.HTMLAttributes<HTMLDivElement> {
-    article: Doc<'articles'>;
+    // article: Doc<'articles'>;
+    article: articleWithImgUrl;
 }
 
 export default function articleCard({ article, className }: articleCardProps) {
     return (
         <Card className={cn('w-full max-w-sm', className)}>
-            {article.imgId && (
-                <Image src={getImageUrl(article.imgId)} alt={'preview image'} width={400} height={250} className="rounded-t-lg aspect-[1.6]" />
-            )}
+            {article.imgUrl && <Image src={article.imgUrl} alt={'preview image'} width={400} height={250} className="rounded-t-lg aspect-[1.6]" />}
 
             <CardContent className="flex flex-col aspect-square items-start justify-between px-6 py-2">
                 <div>

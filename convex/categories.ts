@@ -135,7 +135,17 @@ export const deleteAllCategoriesInternal = internalMutation({
 
         await Promise.all(
             categories.map(async (category) => {
-                return await ctx.db.delete(category._id);
+                const articles = await ctx.db.query('articles').collect();
+
+                return Promise.all([
+                    (articles ?? []).map(async (article) => {
+                        if (article.categories?.includes(category._id)) {
+                            const categoriesWithoutDeletedOne = article.categories.filter((id) => id !== category._id);
+                            await ctx.db.patch(article._id, { categories: categoriesWithoutDeletedOne });
+                        }
+                    }),
+                    await ctx.db.delete(category._id)
+                ]);
             })
         );
     }

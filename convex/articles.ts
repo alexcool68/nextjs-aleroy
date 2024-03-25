@@ -10,7 +10,7 @@ import { v4 } from 'uuid';
 export const createArticle = mutation({
     args: {
         title: v.string(),
-        imgId: v.optional(v.string()),
+        imgId: v.optional(v.id('_storage')),
         content: v.string(),
         categories: v.optional(v.array(v.id('categories'))),
         isPublished: v.optional(v.boolean())
@@ -72,7 +72,16 @@ export const getArticles = query({
             return [];
         }
 
-        return articles;
+        return Promise.all(
+            articles.map(async (article) => ({
+                ...article,
+                ...(article.imgId !== undefined
+                    ? {
+                          imgUrl: await ctx.storage.getUrl(article.imgId)
+                      }
+                    : {})
+            }))
+        );
     }
 });
 
@@ -90,7 +99,13 @@ export const getArticleBySlug = query({
             return null;
         }
 
-        return article;
+        let imageUrl;
+
+        if (article.imgId !== undefined) {
+            imageUrl = await ctx.storage.getUrl(article.imgId);
+        }
+
+        return { article: article, imgUrl: imageUrl };
     }
 });
 
