@@ -26,11 +26,10 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning={true}>
             <body className={cn('min-h-screen font-sans', fonts)}>
-                {/* <body className={inter.className}> */}
                 <ConvexClientProvider>
                     <Toaster />
                     <Header />
-                    <div className="mt-20">{children}</div>
+                    <div className="">{children}</div>
                     <Footer />
                     <Analytics debug={false} />
                 </ConvexClientProvider>

@@ -54,7 +54,7 @@ export const MAIN_MENU: MenuInterface[] = [
         menu: [
             {
                 label: 'debrid',
-                title: 'Debrideur de liens',
+                title: 'Debrideur',
                 href: '/dashboard/debrid',
                 icon: <Key className="h-4 w-4 mr-2" />
             }

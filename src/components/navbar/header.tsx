@@ -15,7 +15,8 @@ export function Header({ className }: headerProps) {
     const pathname = usePathname();
 
     return (
-        <div className={cn('flex-nowrap fixed top-0 z-10 flex w-full bg-background/85 backdrop-blur-sm lg:flex-wrap border-b', className)}>
+        // <div className={cn('flex-nowrap fixed top-0 z-10 flex w-full bg-background/85 backdrop-blur-sm lg:flex-wrap border-b', className)}>
+        <div className={cn('flex-nowrap top-0 z-10 flex w-full bg-background/85 backdrop-blur-sm lg:flex-wrap border-b', className)}>
             <div className="container flex h-20 items-center justify-between">
                 <Link href="/" className="inline-flex items-center gap-5">
                     <Image src={'/logo.png'} alt="alexis logo" width={64} height={64} className="relative size-8 lg:size-16" />
@@ -26,15 +27,18 @@ export function Header({ className }: headerProps) {
                     <SignedIn>
                         <Link
                             href="/"
-                            className={cn('text-secondary-foreground border-b-2 px-1 py-2', pathname === '/' ? 'border-primary' : 'border-secondary')}
+                            className={cn(
+                                'border-b-2 px-1 py-2 transition-colors hover:text-foreground',
+                                pathname === '/' ? 'border-primary' : 'border-secondary text-muted-foreground'
+                            )}
                         >
                             Home
                         </Link>
                         <Link
                             href="/dashboard"
                             className={cn(
-                                'text-secondary-foreground border-b-2 px-1 py-2',
-                                pathname.includes('/dashboard') ? 'border-primary' : 'border-secondary'
+                                'border-b-2 px-1 py-2 transition-colors hover:text-foreground',
+                                pathname.includes('/dashboard') ? 'border-primary' : 'border-secondary text-muted-foreground'
                             )}
                         >
                             Dashboard

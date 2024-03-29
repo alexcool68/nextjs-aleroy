@@ -39,7 +39,7 @@ export default function ArticlesDashboard() {
                         <Input title="category" name="category" id="category" value={category} onChange={(e) => setCategory(e.target.value)} />
                         <Button
                             variant={'secondary'}
-                            size={'sm'}
+                            size={'default'}
                             onClick={async () => {
                                 if (category) {
                                     await addCategory({ title: category });
