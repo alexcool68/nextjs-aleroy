@@ -23,11 +23,13 @@ export function TopNavDashboard({ className, userRole }: TopNavDashboardProps) {
 
     return (
         <>
-            <header className="sticky top-0 flex h-16 items-center gap-4 border-b px-4 md:px-6 bg-background/85 backdrop-blur-sm">
+            <header className={cn('sticky top-0 flex h-16 items-center gap-4 border-b px-4 md:px-6 bg-background/85 backdrop-blur-sm', className)}>
                 <div className="container mx-auto">
                     <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
                         <Link href="/dashboard" className="flex items-center gap-2 text-lg font-semibold md:text-base">
-                            <LayoutDashboardIcon className="h-6 w-6" />
+                            <LayoutDashboardIcon
+                                className={cn('h-5 w-5', pathname.endsWith('dashboard') ? 'text-foreground' : 'text-muted-foreground')}
+                            />
                             <span className="sr-only">Dashboard</span>
                         </Link>
                         {MAIN_MENU.map((item, _idx) => (
@@ -39,7 +41,9 @@ export function TopNavDashboard({ className, userRole }: TopNavDashboardProps) {
                                               href={submenu.href}
                                               className={cn(
                                                   'transition-colors hover:text-foreground',
-                                                  pathname.includes(submenu.href) ? 'text-foreground' : 'text-muted-foreground'
+                                                  pathname.includes(submenu.href)
+                                                      ? 'text-foreground border-b border-primary py-1.5'
+                                                      : 'text-muted-foreground'
                                               )}
                                           >
                                               {submenu.title}
@@ -59,8 +63,10 @@ export function TopNavDashboard({ className, userRole }: TopNavDashboardProps) {
                         </SheetTrigger>
                         <SheetContent side="left">
                             <nav className="grid gap-6 text-lg font-medium">
-                                <Link href="#" className="flex items-center gap-2 text-lg font-semibold">
-                                    <LayoutDashboardIcon className="h-6 w-6" />
+                                <Link href="/dashboard" className="flex items-center gap-2 text-lg font-semibold">
+                                    <LayoutDashboardIcon
+                                        className={cn('h-5 w-5', pathname.endsWith('dashboard') ? 'text-foreground' : 'text-muted-foreground')}
+                                    />
                                     <span className="sr-only">Dashboard</span>
                                 </Link>
                                 {MAIN_MENU.map((item, _idx) => (
@@ -71,8 +77,8 @@ export function TopNavDashboard({ className, userRole }: TopNavDashboardProps) {
                                                       key={_idx}
                                                       href={submenu.href}
                                                       className={cn(
-                                                          'hover:text-foreground',
-                                                          pathname.includes(submenu.href) ? 'text-muted-foreground' : ''
+                                                          'transition-colors hover:text-foreground',
+                                                          pathname.includes(submenu.href) ? 'text-foreground' : 'text-muted-foreground'
                                                       )}
                                                   >
                                                       {submenu.title}
